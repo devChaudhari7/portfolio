@@ -366,7 +366,7 @@ export const timeline: TimelineItem[] = [
     kind: "education",
     title: "B.Tech, Computer Science",
     org: "Nirma University",
-    meta: "CGPA 8.19 / 10",
+    meta: "CGPA 8.34 / 10",
     period: "Jul 2024 – Jul 2027",
     bullets: ["Computer Science engineering — systems, architecture, and applied AI."],
   },
