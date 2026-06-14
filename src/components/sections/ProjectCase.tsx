@@ -41,8 +41,9 @@ export default function ProjectCase({ project, open, position, onClose, onPrev, 
       id={project.id}
       aria-label={`${project.name} — ${project.tagline}`}
       aria-hidden={!open}
+      data-lenis-prevent
       className={cn(
-        "case-panel fixed inset-0 z-[75] flex items-start justify-center overflow-y-auto p-4 py-20 sm:items-center sm:p-8",
+        "case-panel fixed inset-0 z-[75] overflow-y-auto overscroll-contain",
         open && "is-open",
       )}
     >
@@ -55,7 +56,8 @@ export default function ProjectCase({ project, open, position, onClose, onPrev, 
         className="fixed inset-0 cursor-zoom-out bg-void/75"
       />
 
-      <div className="case-card relative z-10 my-auto w-full max-w-3xl rounded-2xl border border-line-strong bg-[color-mix(in_oklab,var(--surface)_93%,transparent)] p-5 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.95)] sm:p-8">
+      <div className="relative z-10 flex min-h-full items-start justify-center p-4 py-20 sm:items-center sm:p-8">
+      <div className="case-card w-full max-w-3xl rounded-2xl border border-line-strong bg-[color-mix(in_oklab,var(--surface)_93%,transparent)] p-5 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.95)] sm:p-8">
         {/* header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div className="flex items-baseline gap-4">
@@ -195,6 +197,7 @@ export default function ProjectCase({ project, open, position, onClose, onPrev, 
             )}
           </div>
         </div>
+      </div>
       </div>
 
       <MediaLightbox open={lightbox} onClose={() => setLightbox(false)} title={project.name}>

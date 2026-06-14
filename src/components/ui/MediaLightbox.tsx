@@ -29,7 +29,8 @@ export default function MediaLightbox({ open, onClose, title, children }: Props)
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[80] grid place-items-center p-4 sm:p-10"
+          className="fixed inset-0 z-[80] overflow-y-auto overscroll-contain p-4 sm:p-10"
+          data-lenis-prevent
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -39,13 +40,13 @@ export default function MediaLightbox({ open, onClose, title, children }: Props)
           aria-label={`${title} — expanded preview`}
         >
           <button
-            className="absolute inset-0 cursor-zoom-out bg-void/85 backdrop-blur-sm"
+            className="fixed inset-0 cursor-zoom-out bg-void/85 backdrop-blur-sm"
             onClick={onClose}
             aria-label="Close preview"
             tabIndex={-1}
           />
           <motion.div
-            className="relative z-10 w-full max-w-4xl"
+            className="relative z-10 mx-auto flex min-h-full w-full max-w-4xl flex-col justify-center"
             initial={{ scale: 0.94, y: 16 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.96, y: 8 }}
