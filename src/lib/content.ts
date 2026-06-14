@@ -257,6 +257,12 @@ export const projects: Project[] = [
     skills: ["nextjs", "typescript", "llm-gemini", "multimodal-ai", "supabase", "postgresql", "rls", "multi-tenant", "vercel", "nlp"],
     links: { live: "https://lexai-rho.vercel.app", github: "https://github.com/devChaudhari7/lexai" },
     rating: 0.97,
+    assets: {
+      poster: asset("lexai", "poster.png"),
+      videoPreview: asset("lexai", "demo-preview.mp4"),
+      videoFull: asset("lexai", "demo-full.mp4"),
+      shots: [1, 2, 3, 4, 5].map((n) => asset("lexai", `shot-${n}.png`)),
+    },
   },
   {
     id: "hireai",
