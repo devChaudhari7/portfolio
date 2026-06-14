@@ -63,6 +63,18 @@ export default function ProjectCase({ project, open, position, onClose, onPrev, 
             <div>
               <h3 className="display text-[clamp(1.7rem,4.5vw,2.8rem)]">{project.name}</h3>
               <p className="mt-1 text-sm text-muted sm:text-base">{project.tagline}</p>
+              {project.accolade && (
+                <span
+                  className={cn(
+                    "mt-2.5 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[10px] uppercase tracking-widest",
+                    project.accolade.gold
+                      ? "border-gold/50 bg-gold/5 text-gold"
+                      : "border-signal/40 bg-signal/5 text-signal",
+                  )}
+                >
+                  {project.accolade.gold ? "★" : "⬡"} {project.accolade.label}
+                </span>
+              )}
             </div>
           </div>
           <div className="flex flex-none items-center gap-2">

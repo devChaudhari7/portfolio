@@ -114,6 +114,17 @@ export default function Projects() {
                         featured
                       </span>
                     )}
+                    {p.accolade && (
+                      <span
+                        className={cn(
+                          "rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest",
+                          p.accolade.gold ? "border-gold/50 text-gold" : "border-signal/40 text-signal",
+                        )}
+                      >
+                        {p.accolade.gold ? "★ " : ""}
+                        {p.accolade.label}
+                      </span>
+                    )}
                   </span>
                   <span className="mt-1 hidden font-mono text-[11px] text-muted/70 sm:block">
                     {p.stack.join(" · ")}

@@ -162,6 +162,7 @@ export interface Project {
   links: { live?: string; github?: string };
   rating: number; // 0..1 — Trust Ring flourish
   assets?: ProjectAssets; // real media; falls back to a placeholder when absent
+  accolade?: { label: string; gold?: boolean }; // hackathon / competition context
   flagged?: string; // placeholder note
 }
 
@@ -290,6 +291,13 @@ export const projects: Project[] = [
     skills: ["nextjs", "fastapi", "python", "supabase", "postgresql", "rest-apis", "nlp", "multimodal-ai", "system-design"],
     links: { live: "https://pet-pooja-kappa.vercel.app", github: "https://github.com/devChaudhari7/VoiceServe-PetPooja" },
     rating: 0.93,
+    assets: {
+      poster: asset("voiceserve", "poster.png"),
+      videoPreview: asset("voiceserve", "demo-preview.mp4"),
+      videoFull: asset("voiceserve", "demo-full.mp4"),
+      shots: [1, 2].map((n) => asset("voiceserve", `shot-${n}.png`)),
+    },
+    accolade: { label: "HACKaMINeD '26 · National Hackathon" },
   },
   {
     id: "hireai",
@@ -321,6 +329,7 @@ export const projects: Project[] = [
       videoFull: asset("hireai", "demo-full.mp4"),
       shots: [1, 2, 3, 4].map((n) => asset("hireai", `shot-${n}.png`)),
     },
+    accolade: { label: "Top 10 National · Codeversity AI '26", gold: true },
   },
   {
     id: "blockestate",
