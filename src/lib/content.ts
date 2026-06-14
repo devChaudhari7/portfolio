@@ -30,6 +30,7 @@ export const nav = [
 ] as const;
 
 export const about = {
+  portrait: "/assets/me/portrait.jpg",
   paragraphs: [
     "I'm a Computer Science engineering student at Nirma University (and a Diploma topper before that) who learns by building real, complete products — not tutorials. I like owning a project end to end: designing the data model, building the backend, crafting the interface, and shipping it to production.",
     "My work spans AI/LLM platforms, full-stack web apps, cross-platform mobile, and a bit of blockchain. I've shipped a live AI SaaS solo in two weeks, built a social platform that runs on iOS and Android from a single codebase, and placed in the Top 10 nationally in an AI hackathon. What ties it together is a focus on craftsmanship — clean architecture, secure multi-tenant systems, and interfaces that feel considered.",
@@ -134,6 +135,17 @@ export interface ProjectFlowStep {
   note?: string;
 }
 
+export interface ProjectAssets {
+  poster: string;
+  /** light, muted loop for in-frame autoplay */
+  videoPreview?: string;
+  /** compressed full clip (with audio) for the lightbox */
+  videoFull?: string;
+  shots: string[];
+}
+
+const asset = (id: string, file: string) => `/assets/projects/${id}/${file}`;
+
 export interface Project {
   id: string;
   index: string; // "01"
@@ -149,6 +161,7 @@ export interface Project {
   skills: string[]; // skill ids used (for network reconfigure)
   links: { live?: string; github?: string };
   rating: number; // 0..1 — Trust Ring flourish
+  assets?: ProjectAssets; // real media; falls back to a placeholder when absent
   flagged?: string; // placeholder note
 }
 
@@ -178,6 +191,12 @@ export const projects: Project[] = [
     skills: ["react-native", "expo", "typescript", "supabase", "postgresql", "postgis", "rls", "multi-tenant", "system-design", "eas"],
     links: { github: "https://github.com/devChaudhari7/Trustly" },
     rating: 0.96,
+    assets: {
+      poster: asset("trustly", "poster.jpeg"),
+      videoPreview: asset("trustly", "demo-preview.mp4"),
+      videoFull: asset("trustly", "demo-full.mp4"),
+      shots: [1, 2, 3, 4, 5, 6].map((n) => asset("trustly", `shot-${n}.jpeg`)),
+    },
   },
   {
     id: "billai",
@@ -205,6 +224,12 @@ export const projects: Project[] = [
     skills: ["nextjs", "typescript", "llm-gemini", "multimodal-ai", "supabase", "postgresql", "rls", "multi-tenant", "vercel", "nlp"],
     links: { live: "https://billai-omega.vercel.app", github: undefined },
     rating: 0.98,
+    assets: {
+      poster: asset("billai", "poster.png"),
+      videoPreview: asset("billai", "demo-preview.mp4"),
+      videoFull: asset("billai", "demo-full.mp4"),
+      shots: [1, 2].map((n) => asset("billai", `shot-${n}.png`)),
+    },
   },
   {
     id: "lexai",
@@ -257,6 +282,12 @@ export const projects: Project[] = [
     skills: ["python", "fastapi", "mysql", "scikit-learn", "nlp", "rest-apis", "system-design", "architecture"],
     links: { github: "https://github.com/devChaudhari7/HireAi-V1" },
     rating: 0.9,
+    assets: {
+      poster: asset("hireai", "poster.png"),
+      videoPreview: asset("hireai", "demo-preview.mp4"),
+      videoFull: asset("hireai", "demo-full.mp4"),
+      shots: [1, 2, 3, 4].map((n) => asset("hireai", `shot-${n}.png`)),
+    },
   },
   {
     id: "blockestate",
@@ -282,6 +313,12 @@ export const projects: Project[] = [
     skills: ["solidity", "hardhat", "ethersjs", "erc721", "ipfs", "metamask", "react", "tailwind", "testing"],
     links: { github: "https://github.com/devChaudhari7/Real-estate-blockchain-project" },
     rating: 0.86,
+    assets: {
+      poster: asset("blockestate", "poster.png"),
+      videoPreview: asset("blockestate", "demo-preview.mp4"),
+      videoFull: asset("blockestate", "demo-full.mp4"),
+      shots: [1, 2, 3, 4].map((n) => asset("blockestate", `shot-${n}.png`)),
+    },
   },
 ];
 

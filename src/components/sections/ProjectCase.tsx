@@ -1,47 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Ring from "@/components/ui/Ring";
+import Image from "next/image";
 import DeviceFrame from "@/components/ui/DeviceFrame";
 import MediaLightbox from "@/components/ui/MediaLightbox";
 import ProjectFlow from "./ProjectFlow";
+import ProjectMedia, { MediaPlaceholder } from "./ProjectMedia";
 import { cn } from "@/lib/cn";
 import type { Project } from "@/lib/content";
-
-function MediaPlaceholder({ project, large = false }: { project: Project; large?: boolean }) {
-  // Drop real assets in /public/assets/projects/<id>/ and replace this with
-  // <video muted autoPlay loop playsInline poster=...> or <Image .../>.
-  return (
-    <div className="grain relative grid h-full w-full place-items-center overflow-hidden">
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(100% 100% at 20% 0%, color-mix(in oklab, var(--signal) 22%, transparent), transparent 55%), radial-gradient(100% 100% at 90% 100%, color-mix(in oklab, var(--signal-deep) 30%, transparent), transparent 55%), var(--surface)",
-        }}
-      />
-      <div
-        className="absolute inset-0 opacity-[0.18]"
-        style={{
-          backgroundImage:
-            "linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
-        }}
-      />
-      <div className="relative z-10 flex flex-col items-center gap-3 text-center">
-        <Ring size={large ? 72 : 52} rating={project.rating} spin>
-          <span className="font-display text-sm font-semibold text-text">
-            {project.frame === "phone" ? "app" : "web"}
-          </span>
-        </Ring>
-        <span className="font-display text-xl font-semibold tracking-tight text-text">{project.name}</span>
-        <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
-          interface preview · drop assets in /{project.id}/
-        </span>
-      </div>
-    </div>
-  );
-}
 
 interface Props {
   project: Project;
@@ -55,6 +21,7 @@ interface Props {
 export default function ProjectCase({ project, open, position, onClose, onPrev, onNext }: Props) {
   const [lightbox, setLightbox] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const a = project.assets;
 
   useEffect(() => {
     if (!open) return;
@@ -133,21 +100,21 @@ export default function ProjectCase({ project, open, position, onClose, onPrev, 
           </div>
         </div>
 
-        {/* media */}
+        {/* media (in-frame demo) */}
         <button
           type="button"
           onClick={() => setLightbox(true)}
           tabIndex={open ? 0 : -1}
           data-cursor
           className="group block w-full text-left"
-          aria-label={`Expand ${project.name} preview`}
+          aria-label={`Expand ${project.name} demo and screenshots`}
         >
           <div className="relative">
             <DeviceFrame variant={project.frame} url={project.links.live ?? project.links.github}>
-              <MediaPlaceholder project={project} />
+              <ProjectMedia project={project} open={open} />
             </DeviceFrame>
             <span className="pointer-events-none absolute right-3 top-3 z-20 rounded-full bg-void/70 px-3 py-1 font-mono text-[10px] text-text opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">
-              ⤢ expand
+              {a ? "⤢ expand demo" : "⤢ expand"}
             </span>
           </div>
         </button>
@@ -219,12 +186,44 @@ export default function ProjectCase({ project, open, position, onClose, onPrev, 
       </div>
 
       <MediaLightbox open={lightbox} onClose={() => setLightbox(false)} title={project.name}>
-        <DeviceFrame variant={project.frame} url={project.links.live ?? project.links.github}>
-          <MediaPlaceholder project={project} large />
-        </DeviceFrame>
-        <p className="mt-4 text-center font-mono text-xs text-muted">
-          full demo video + screenshots play here once dropped into /assets/projects/{project.id}/
-        </p>
+        {a?.videoFull ? (
+          <video
+            src={a.videoFull}
+            poster={a.poster}
+            controls
+            autoPlay
+            playsInline
+            className="max-h-[70vh] w-full rounded-xl border border-line-strong bg-void object-contain"
+          />
+        ) : a ? (
+          <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-line-strong bg-void">
+            <Image src={a.poster} alt={`${project.name} preview`} fill sizes="100vw" className="object-contain" />
+          </div>
+        ) : (
+          <DeviceFrame variant={project.frame}>
+            <MediaPlaceholder project={project} large />
+          </DeviceFrame>
+        )}
+
+        {a?.shots?.length ? (
+          <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-4">
+            {a.shots.map((src, i) => (
+              <div key={src} className="relative aspect-square overflow-hidden rounded-lg border border-line bg-void">
+                <Image
+                  src={src}
+                  alt={`${project.name} screenshot ${i + 1}`}
+                  fill
+                  sizes="(max-width: 640px) 30vw, 180px"
+                  className="object-contain"
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-4 text-center font-mono text-xs text-muted">
+            demo video + screenshots play here once dropped into /assets/projects/{project.id}/
+          </p>
+        )}
       </MediaLightbox>
     </article>
   );

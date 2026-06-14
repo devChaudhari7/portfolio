@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Reveal from "@/components/ui/Reveal";
 import SectionIndex from "@/components/ui/SectionIndex";
 import { about, site } from "@/lib/content";
@@ -12,25 +13,24 @@ export default function About() {
             <div className="absolute -inset-4 rounded-full border border-line opacity-60 transition-opacity duration-700 group-hover:opacity-100" aria-hidden="true" />
             <div className="absolute -inset-4 animate-[spin_22s_linear_infinite] rounded-full border border-dashed border-signal/20" aria-hidden="true" />
             <div className="grain relative aspect-square overflow-hidden rounded-full border border-line-strong bg-[var(--elevated)]">
-              {/* Placeholder portrait — drop /public/assets/me/portrait.jpg and swap for next/image */}
-              <div
-                className="absolute inset-0 transition-all duration-700 group-hover:scale-105"
-                style={{
-                  background:
-                    "radial-gradient(120% 120% at 30% 20%, color-mix(in oklab, var(--signal) 30%, transparent), transparent 55%), radial-gradient(120% 120% at 80% 90%, color-mix(in oklab, var(--signal-deep) 40%, transparent), transparent 55%), var(--surface)",
-                }}
+              <Image
+                src={about.portrait}
+                alt={`${site.name}, ${site.role}`}
+                fill
+                sizes="(max-width: 1024px) 80vw, 420px"
+                className="object-cover grayscale transition-all duration-700 [filter:grayscale(1)_contrast(1.05)_brightness(0.95)] group-hover:scale-[1.04] group-hover:[filter:none]"
               />
-              <div className="absolute inset-0 grid place-items-center">
-                <span className="font-display text-7xl font-semibold tracking-tight text-text/70">DC</span>
-              </div>
+              {/* duotone signal tint — fades to the clean photo on hover */}
               <div
-                className="absolute inset-0 mix-blend-screen transition-opacity duration-700 group-hover:opacity-0"
-                style={{ background: "linear-gradient(135deg, color-mix(in oklab, var(--signal) 45%, transparent), transparent)" }}
+                className="pointer-events-none absolute inset-0 mix-blend-color transition-opacity duration-700 group-hover:opacity-0"
+                style={{ background: "linear-gradient(140deg, var(--signal-deep), transparent 60%)" }}
                 aria-hidden="true"
               />
-              <span className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[10px] text-muted">
-                portrait · drop /me/portrait.jpg
-              </span>
+              <div
+                className="pointer-events-none absolute inset-0 opacity-40 mix-blend-screen transition-opacity duration-700 group-hover:opacity-0"
+                style={{ background: "radial-gradient(120% 120% at 30% 15%, color-mix(in oklab, var(--signal) 55%, transparent), transparent 55%)" }}
+                aria-hidden="true"
+              />
             </div>
           </div>
         </Reveal>

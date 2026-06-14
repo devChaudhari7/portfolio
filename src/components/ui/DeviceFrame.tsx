@@ -18,7 +18,7 @@ export default function DeviceFrame({ variant, url, children, className }: Frame
         )}
       >
         <div className="absolute left-1/2 top-2 z-10 h-5 w-24 -translate-x-1/2 rounded-b-2xl bg-void" aria-hidden="true" />
-        <div className="h-full w-full overflow-hidden rounded-[1.7rem] bg-void">{children}</div>
+        <div className="relative h-full w-full overflow-hidden rounded-[1.7rem] bg-void">{children}</div>
       </div>
     );
   }
@@ -40,7 +40,7 @@ export default function DeviceFrame({ variant, url, children, className }: Frame
           </span>
         )}
       </div>
-      <div className="aspect-[16/10] w-full bg-void">{children}</div>
+      <div className="relative aspect-[16/10] w-full bg-void">{children}</div>
     </div>
   );
 }

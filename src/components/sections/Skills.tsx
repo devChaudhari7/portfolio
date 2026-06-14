@@ -20,9 +20,8 @@ export default function Skills() {
 
   const layout = useMemo(() => {
     const rnd = (v: number) => Math.round(v * 100) / 100; // avoid SSR/client float drift
-    const usedIds = new Set<string>();
-    projects.forEach((p) => p.skills.forEach((s) => usedIds.add(s)));
-    const used = skills.filter((s) => usedIds.has(s.id));
+    // Show the full skill inventory; project edges light up where they exist.
+    const used = skills;
 
     const clusterPos = new Map<ClusterId, { x: number; y: number }>();
     clusters.forEach((c, i) => {
