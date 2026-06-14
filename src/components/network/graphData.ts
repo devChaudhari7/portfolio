@@ -91,8 +91,6 @@ export function buildGraph(maxNodes = 999): Graph {
     });
     edges.push({ a: "self", b: aid(a.id) });
   }
-  // Explicit, factual link (content: "Team CheatBot").
-  edges.push({ a: aid("sih"), b: pid("cheatbot") });
 
   if (nodes.length <= maxNodes) return { nodes, edges };
 

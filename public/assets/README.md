@@ -18,10 +18,9 @@ component for `next/image` / `<video>` (noted inline in the code).
       poster.jpg            #   ~1600×1000
       demo.mp4 + demo.webm
       shot-1.png …
+    lexai/                  # web → browser frame (live: lexai-rho.vercel.app)
     hireai/                 # web → browser frame
-    cheatbot/               # web → browser frame
     blockestate/            # web → browser frame
-    android-app/            # mobile → phone frame (optional 6th project)
   og/
     (auto-generated)        # OG image is generated at /opengraph-image; favicon at /icon.svg.
                             # Drop a custom og.png (1200×630) here only if you want to override.
