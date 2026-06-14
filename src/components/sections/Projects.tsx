@@ -1,178 +1,148 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { useCallback, useEffect, useState } from "react";
 import NetworkCanvas from "@/components/network/NetworkCanvas";
 import ProjectCase from "./ProjectCase";
 import Ring from "@/components/ui/Ring";
 import SectionIndex from "@/components/ui/SectionIndex";
 import Reveal from "@/components/ui/Reveal";
 import { projects, projectById } from "@/lib/content";
-import { useMediaQuery } from "@/lib/hooks";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
+import {
+  PROJECT_NAV_EVENT,
+  closeProjectHash,
+  currentProjectHash,
+  openProjectHash,
+} from "@/lib/projectNav";
 import { cn } from "@/lib/cn";
 
-type View = "immersive" | "index";
-
 export default function Projects() {
-  const lg = useMediaQuery("(min-width: 1024px)");
   const { scrollTo } = useSmoothScroll();
-  const [view, setView] = useState<View>("immersive");
-  const [active, setActive] = useState(projects[0].id);
-  const pending = useRef<string | null>(null);
+  const [active, setActive] = useState<string | null>(null);
 
-  // scroll-driven active project (drives the reconfiguring network)
+  // Single source of truth: the URL hash. Sync on mount, on history nav, and
+  // on our own open/close events. The canvas is never unmounted.
+  const sync = useCallback(() => {
+    const h = currentProjectHash();
+    setActive(projectById.has(h) ? h : null);
+  }, []);
+
   useEffect(() => {
-    if (view !== "immersive") return;
-    const blocks = Array.from(document.querySelectorAll<HTMLElement>("[data-project]"));
-    if (!blocks.length) return;
-    const ratios = new Map<string, number>();
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) ratios.set((e.target as HTMLElement).dataset.project!, e.isIntersecting ? e.intersectionRatio : 0);
-        let top = "";
-        let max = 0;
-        ratios.forEach((v, k) => {
-          if (v > max) {
-            max = v;
-            top = k;
-          }
-        });
-        if (top) setActive(top);
-      },
-      { threshold: [0.2, 0.5, 0.8], rootMargin: "-20% 0px -30% 0px" },
-    );
-    blocks.forEach((b) => io.observe(b));
-    return () => io.disconnect();
-  }, [view]);
+    sync();
+    window.addEventListener("popstate", sync);
+    window.addEventListener(PROJECT_NAV_EVENT, sync);
+    return () => {
+      window.removeEventListener("popstate", sync);
+      window.removeEventListener(PROJECT_NAV_EVENT, sync);
+    };
+  }, [sync]);
 
-  // after switching back to immersive from index, scroll to the chosen project
+  // Bring the network into view behind a freshly opened panel.
   useEffect(() => {
-    if (view === "immersive" && pending.current) {
-      const id = pending.current;
-      pending.current = null;
-      requestAnimationFrame(() => scrollTo(`#project-${id}`, { offset: 80 }));
-    }
-  }, [view, scrollTo]);
+    if (active) scrollTo("#work", { offset: 0 });
+  }, [active, scrollTo]);
 
-  const activeProject = projectById.get(active);
+  const activeIndex = active ? projects.findIndex((p) => p.id === active) : -1;
+  const open = (id: string) => openProjectHash(id);
+  const close = () => closeProjectHash();
+  const step = (dir: 1 | -1) => {
+    const base = activeIndex < 0 ? 0 : activeIndex;
+    open(projects[(base + dir + projects.length) % projects.length].id);
+  };
 
   return (
     <section id="work" data-route="work" className="section-pad relative">
       <div className="container-edge">
-        <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <Reveal>
-              <SectionIndex index="02" label="projects" className="mb-6" />
-            </Reveal>
-            <Reveal delay={0.05}>
-              <h2 className="display text-[clamp(2rem,6vw,4rem)]">
-                Subsystems<span className="text-signal">.</span>
-              </h2>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <p className="mt-4 max-w-xl text-muted">
-                Six projects, one graph. Each is a working system — the network re-wires to whichever you&apos;re reading.
-              </p>
-            </Reveal>
-          </div>
-
-          {/* view toggle */}
+        <div className="mb-10">
+          <Reveal>
+            <SectionIndex index="02" label="projects" className="mb-6" />
+          </Reveal>
+          <Reveal delay={0.05}>
+            <h2 className="display text-[clamp(2rem,6vw,4rem)]">
+              Subsystems<span className="text-signal">.</span>
+            </h2>
+          </Reveal>
           <Reveal delay={0.1}>
-            <div className="inline-flex rounded-full border border-line p-1 font-mono text-xs" role="tablist" aria-label="Projects view">
-              {(["immersive", "index"] as View[]).map((v) => (
-                <button
-                  key={v}
-                  role="tab"
-                  aria-selected={view === v}
-                  onClick={() => setView(v)}
-                  className={cn(
-                    "rounded-full px-4 py-1.5 transition-colors",
-                    view === v ? "bg-signal text-void" : "text-muted hover:text-text",
-                  )}
-                >
-                  {v}
-                </button>
-              ))}
-            </div>
+            <p className="mt-4 max-w-xl text-muted">
+              Six projects, one graph. Open any node — it pulls to the core and its case study
+              expands over the living network.
+            </p>
           </Reveal>
         </div>
 
-        <AnimatePresence mode="wait">
-          {view === "immersive" ? (
-            <motion.div
-              key="immersive"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="grid grid-cols-1 gap-x-16 lg:grid-cols-[0.9fr_1.1fr]"
-            >
-              {/* sticky reconfiguring network (desktop) */}
-              {lg && (
-                <div className="hidden lg:block">
-                  <div className="sticky top-0 flex h-screen items-center">
-                    <div className="relative h-[78vh] w-full">
-                      <NetworkCanvas variant="focus" activeProjectId={active} className="absolute inset-0 h-full w-full" />
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 p-6">
-                        <p className="mono-label mb-1">// reconfiguring · node {activeProject?.index}</p>
-                        <p className="font-display text-2xl font-semibold text-text">{activeProject?.name}</p>
-                        <p className="mt-1 text-sm text-muted">{activeProject?.tagline}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+        {/* persistent network stage — click a node to open its subsystem */}
+        <Reveal>
+          <div className="relative mb-10 h-[58vh] min-h-[360px] overflow-hidden rounded-3xl border border-line bg-[var(--surface)]/30">
+            <NetworkCanvas
+              variant="focus"
+              interactive
+              activeProjectId={active}
+              onSelect={open}
+              className="absolute inset-0 h-full w-full"
+            />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5">
+              <p className="mono-label">// the system · {projects.length} subsystems online</p>
+              <p className="hidden font-mono text-[11px] text-muted sm:block">
+                click a node to dive in · or pick one below
+              </p>
+            </div>
+          </div>
+        </Reveal>
 
-              {/* case studies */}
-              <div>
-                {projects.map((p) => (
-                  <ProjectCase key={p.id} project={p} />
-                ))}
-              </div>
-            </motion.div>
-          ) : (
-            <motion.ul
-              key="index"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="divide-y divide-line border-y border-line"
-            >
-              {projects.map((p) => (
-                <li key={p.id}>
-                  <button
-                    onClick={() => {
-                      pending.current = p.id;
-                      setActive(p.id);
-                      setView("immersive");
-                    }}
-                    className="group grid w-full grid-cols-[auto_1fr_auto] items-center gap-5 py-6 text-left transition-colors hover:bg-[var(--surface)]/40"
-                  >
-                    <span className="font-mono text-sm text-signal/70">{p.index}</span>
-                    <span className="min-w-0">
-                      <span className="flex flex-wrap items-baseline gap-x-3">
-                        <span className="font-display text-xl font-semibold text-text transition-colors group-hover:text-signal sm:text-2xl">
-                          {p.name}
-                        </span>
-                        <span className="truncate text-sm text-muted">{p.tagline}</span>
-                      </span>
-                      <span className="mt-1 hidden font-mono text-[11px] text-muted/70 sm:block">
-                        {p.stack.join(" · ")}
-                      </span>
+        {/* crawlable + keyboard-accessible index (also the scannable list view) */}
+        <ul className="divide-y divide-line border-y border-line">
+          {projects.map((p) => (
+            <li key={p.id}>
+              <a
+                href={`#${p.id}`}
+                aria-current={active === p.id ? "true" : undefined}
+                onClick={(e) => {
+                  e.preventDefault();
+                  open(p.id);
+                }}
+                className="group grid w-full grid-cols-[auto_1fr_auto] items-center gap-5 py-6 text-left transition-colors hover:bg-[var(--surface)]/40"
+              >
+                <span className="font-mono text-sm text-signal/70">{p.index}</span>
+                <span className="min-w-0">
+                  <span className="flex flex-wrap items-baseline gap-x-3">
+                    <span className="font-display text-xl font-semibold text-text transition-colors group-hover:text-signal sm:text-2xl">
+                      {p.name}
                     </span>
-                    <span className="flex items-center gap-4">
-                      <Ring size={34} stroke={2} rating={p.rating} />
-                      <span className="font-mono text-xs text-muted transition-transform group-hover:translate-x-1">→</span>
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </motion.ul>
-          )}
-        </AnimatePresence>
+                    <span className="truncate text-sm text-muted">{p.tagline}</span>
+                    {p.lead && (
+                      <span className="rounded-full border border-signal/40 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-signal">
+                        featured
+                      </span>
+                    )}
+                  </span>
+                  <span className="mt-1 hidden font-mono text-[11px] text-muted/70 sm:block">
+                    {p.stack.join(" · ")}
+                  </span>
+                </span>
+                <span className="flex items-center gap-4">
+                  <Ring size={34} stroke={2} rating={p.rating} />
+                  <span className={cn("font-mono text-xs text-muted transition-transform group-hover:translate-x-1")}>
+                    open →
+                  </span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
+
+      {/* all case studies stay mounted (crawlable); visibility is toggled */}
+      {projects.map((p, i) => (
+        <ProjectCase
+          key={p.id}
+          project={p}
+          open={active === p.id}
+          position={{ index: i, total: projects.length }}
+          onClose={close}
+          onPrev={() => step(-1)}
+          onNext={() => step(1)}
+        />
+      ))}
     </section>
   );
 }

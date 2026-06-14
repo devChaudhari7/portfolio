@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import LivingNetwork from "@/components/network/LivingNetwork";
 import { site } from "@/lib/content";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
+import { openProjectHash } from "@/lib/projectNav";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -12,7 +13,8 @@ export default function Hero() {
   const { scrollTo } = useSmoothScroll();
   const [hover, setHover] = useState<string | null>(null);
 
-  const onSelect = (ref: string) => scrollTo(`#project-${ref}`, { offset: 80 });
+  // Open the project's in-place case study (over the projects network) — no route change.
+  const onSelect = (ref: string) => openProjectHash(ref);
 
   return (
     <section

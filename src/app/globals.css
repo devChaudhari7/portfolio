@@ -282,6 +282,40 @@ body.cursor-hidden * {
   opacity: 1;
 }
 
+/* ------------------------------------------------------------------
+   Project case-study panels — expand in place OVER the living network.
+   All panels stay mounted (crawlable); visibility is toggled, never
+   conditionally rendered. Reveal also works via :target for no-JS.
+   ------------------------------------------------------------------ */
+.case-panel {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.45s var(--ease),
+    visibility 0.45s var(--ease);
+}
+.case-panel.is-open,
+.case-panel:target {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.case-panel .case-card {
+  transform: translateY(18px) scale(0.985);
+  transition: transform 0.55s var(--ease);
+}
+.case-panel.is-open .case-card,
+.case-panel:target .case-card {
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .case-panel,
+  .case-panel .case-card {
+    transition: none;
+  }
+}
+
 /* ============================================================
    Reduced motion — Tier C calm
    ============================================================ */

@@ -6,12 +6,15 @@ import type { ProjectFlowStep } from "@/lib/content";
 interface Props {
   steps: ProjectFlowStep[];
   gold?: boolean;
+  /** Gate the animation explicitly (e.g. only when the panel is open). */
+  active?: boolean;
 }
 
 /** Schematic of a project's architecture as connected nodes with traveling light. */
-export default function ProjectFlow({ steps, gold }: Props) {
-  const [ref, inView] = useInView<SVGSVGElement>({ threshold: 0.3 }, true);
+export default function ProjectFlow({ steps, gold, active }: Props) {
+  const [ref, inViewRaw] = useInView<SVGSVGElement>({ threshold: 0.3 }, true);
   const reduced = useReducedMotion();
+  const inView = active ?? inViewRaw;
 
   const stepW = 170;
   const padX = 34;
