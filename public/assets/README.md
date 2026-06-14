@@ -19,6 +19,7 @@ component for `next/image` / `<video>` (noted inline in the code).
       demo.mp4 + demo.webm
       shot-1.png …
     lexai/                  # web → browser frame (live: lexai-rho.vercel.app)
+    voiceserve/             # web → browser frame (live: pet-pooja-kappa.vercel.app)
     hireai/                 # web → browser frame
     blockestate/            # web → browser frame
   og/
