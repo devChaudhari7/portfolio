@@ -1,26 +1,300 @@
 @import "tailwindcss";
 
+/* ============================================================
+   The Living System — design tokens
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --void: #05060a;
+  --surface: #0a0d14;
+  --elevated: #11151f;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --text: #eaeef6;
+  --muted: #7e879b;
+  --signal: #5cc8ff;
+  --signal-deep: #2563eb;
+  --glow: #9be1ff;
+  --gold: #ffce6a;
+
+  /* signature easing — expo out */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.83, 0, 0.17, 1);
+
+  --header-h: 4.5rem;
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-void: var(--void);
+  --color-surface: var(--surface);
+  --color-elevated: var(--elevated);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-signal: var(--signal);
+  --color-signal-deep: var(--signal-deep);
+  --color-glow: var(--glow);
+  --color-gold: var(--gold);
+
+  --font-display: var(--ff-display);
+  --font-body: var(--ff-body);
+  --font-mono: var(--ff-mono);
+
+  --default-font-family: var(--ff-body);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================================
+   Base
+   ============================================================ */
+* {
+  border-color: var(--line);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto; /* Lenis handles smooth scroll */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--void);
+  color: var(--text);
+  font-family: var(--ff-body), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  min-height: 100dvh;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--signal) 30%, transparent);
+  color: var(--glow);
+}
+
+/* Custom-cursor mode hides the native pointer (pointer-fine devices only) */
+body.cursor-hidden,
+body.cursor-hidden * {
+  cursor: none !important;
+}
+
+/* Focus — ring-styled, the motif */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--void);
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--signal) 22%, var(--surface));
+  border-radius: 99px;
+  border: 2px solid var(--void);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--signal) 40%, var(--surface));
+}
+
+/* ============================================================
+   Typography helpers
+   ============================================================ */
+.font-display {
+  font-family: var(--ff-display), ui-sans-serif, system-ui, sans-serif;
+}
+.font-mono {
+  font-family: var(--ff-mono), ui-monospace, monospace;
+}
+
+.display {
+  font-family: var(--ff-display), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+.mono-label {
+  font-family: var(--ff-mono), ui-monospace, monospace;
+  font-size: clamp(0.62rem, 1.4vw, 0.75rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.text-glow {
+  text-shadow: 0 0 24px color-mix(in oklab, var(--signal) 45%, transparent);
+}
+
+.text-gradient {
+  background: linear-gradient(
+    180deg,
+    var(--text) 0%,
+    color-mix(in oklab, var(--text) 70%, var(--signal)) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ============================================================
+   Surfaces / utilities
+   ============================================================ */
+.hairline {
+  border: 1px solid var(--line);
+}
+
+.panel {
+  background: color-mix(in oklab, var(--elevated) 88%, transparent);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+}
+
+.glow-ring {
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--signal) 40%, transparent),
+    0 0 30px -6px color-mix(in oklab, var(--signal) 55%, transparent);
+}
+
+/* faint film grain to keep dark space alive */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.section-pad {
+  padding-block: clamp(5rem, 12vh, 11rem);
+}
+
+.container-edge {
+  width: 100%;
+  max-width: 96rem;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 5vw, 5rem);
+}
+
+/* radial vignette to seat sections in deep space */
+.space-bg {
+  background:
+    radial-gradient(
+      120% 80% at 50% -10%,
+      color-mix(in oklab, var(--signal-deep) 14%, transparent) 0%,
+      transparent 55%
+    ),
+    var(--void);
+}
+
+/* ============================================================
+   Keyframes — perpetual life
+   ============================================================ */
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  8% {
+    transform: scaleY(0.2);
+  }
+  16% {
+    transform: scaleY(1.6);
+  }
+  24% {
+    transform: scaleY(0.6);
+  }
+  32% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes ring-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes dash-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.animate-blink {
+  animation: blink 1.4s steps(1) infinite;
+}
+
+.spin-slow {
+  animation: spin 18s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* reveal helper used before GSAP/Motion hydrate (progressive enhancement) */
+[data-reveal] {
+  opacity: 1;
+}
+
+/* ============================================================
+   Reduced motion — Tier C calm
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .grain::after {
+    display: none;
+  }
 }
