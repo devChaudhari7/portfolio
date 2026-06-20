@@ -161,6 +161,7 @@ export interface Project {
   skills: string[]; // skill ids used (for network reconfigure)
   links: { live?: string; github?: string };
   proofLink?: { label: string; href: string }; // optional extra link (e.g. on-chain proof)
+  embed?: boolean; // live site can be iframed → show an interactive embed in the device frame
   rating: number; // 0..1 — Trust Ring flourish
   assets?: ProjectAssets; // real media; falls back to a placeholder when absent
   accolade?: { label: string; gold?: boolean }; // hackathon / competition context
@@ -225,6 +226,7 @@ export const projects: Project[] = [
     ],
     skills: ["python", "pytorch", "solidity", "ethersjs", "fastapi", "nextjs", "react", "system-design"],
     links: { live: "https://fedchurnguard.vercel.app" },
+    embed: true,
     proofLink: { label: "On-chain proof", href: "https://sepolia.etherscan.io/address/0x92DBE7C05405D6fD4c723e1ac1481058a8BF1312" },
     rating: 0.95,
   },
@@ -253,6 +255,7 @@ export const projects: Project[] = [
     ],
     skills: ["nextjs", "typescript", "llm-gemini", "multimodal-ai", "supabase", "postgresql", "rls", "multi-tenant", "vercel", "nlp"],
     links: { live: "https://billai-omega.vercel.app", github: undefined },
+    embed: true,
     rating: 0.98,
     assets: {
       poster: asset("billai", "poster.png"),
@@ -286,6 +289,7 @@ export const projects: Project[] = [
     ],
     skills: ["nextjs", "typescript", "llm-gemini", "multimodal-ai", "supabase", "postgresql", "rls", "multi-tenant", "vercel", "nlp"],
     links: { live: "https://lexai-rho.vercel.app", github: "https://github.com/devChaudhari7/lexai" },
+    embed: true,
     rating: 0.97,
     assets: {
       poster: asset("lexai", "poster.png"),
@@ -319,6 +323,7 @@ export const projects: Project[] = [
     ],
     skills: ["nextjs", "fastapi", "python", "supabase", "postgresql", "rest-apis", "nlp", "multimodal-ai", "system-design"],
     links: { live: "https://pet-pooja-kappa.vercel.app", github: "https://github.com/devChaudhari7/VoiceServe-PetPooja" },
+    embed: true,
     rating: 0.93,
     assets: {
       poster: asset("voiceserve", "poster.png"),

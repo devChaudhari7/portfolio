@@ -57,6 +57,26 @@ export default function ProjectMedia({ project, open }: { project: Project; open
     }
   }, [open]);
 
+  // Live, interactive embed of the deployed site — only loaded while the panel
+  // is open (closed panels show the poster/placeholder, so no iframe is fetched).
+  if (project.embed && project.links.live) {
+    if (!open) {
+      return a?.poster ? (
+        <Image src={a.poster} alt={`${project.name} interface`} fill sizes="(max-width: 768px) 90vw, 640px" className="object-cover" />
+      ) : (
+        <MediaPlaceholder project={project} />
+      );
+    }
+    return (
+      <iframe
+        src={project.links.live}
+        title={`${project.name} — live interactive demo`}
+        loading="lazy"
+        className="h-full w-full border-0 bg-void"
+      />
+    );
+  }
+
   if (!a) return <MediaPlaceholder project={project} />;
 
   if (a.videoPreview) {

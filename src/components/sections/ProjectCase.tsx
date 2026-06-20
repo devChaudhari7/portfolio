@@ -126,24 +126,49 @@ export default function ProjectCase({ project, open, position, onClose, onPrev, 
           </div>
         </div>
 
-        {/* media (in-frame demo) */}
-        <button
-          type="button"
-          onClick={() => setLightbox(true)}
-          tabIndex={open ? 0 : -1}
-          data-cursor
-          className="group block w-full text-left"
-          aria-label={`Expand ${project.name} demo and screenshots`}
-        >
+        {/* media */}
+        {project.embed && project.links.live ? (
+          /* live, interactive embed of the deployed site */
           <div className="relative">
-            <DeviceFrame variant={project.frame} url={project.links.live ?? project.links.github}>
+            <DeviceFrame variant={project.frame} url={project.links.live}>
               <ProjectMedia project={project} open={open} />
             </DeviceFrame>
-            <span className="pointer-events-none absolute right-3 top-3 z-20 rounded-full bg-void/70 px-3 py-1 font-mono text-[10px] text-text opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">
-              {a ? "⤢ expand demo" : "⤢ expand"}
+            <span className="pointer-events-none absolute left-3 top-3 z-20 flex items-center gap-1.5 rounded-full bg-void/70 px-3 py-1 font-mono text-[10px] text-signal backdrop-blur">
+              <span className="h-1.5 w-1.5 rounded-full bg-signal shadow-[0_0_6px_var(--signal)]" />
+              live · interactive
             </span>
+            {a && (
+              <button
+                type="button"
+                onClick={() => setLightbox(true)}
+                tabIndex={open ? 0 : -1}
+                className="absolute right-3 top-3 z-20 rounded-full bg-void/70 px-3 py-1 font-mono text-[10px] text-text backdrop-blur transition-colors hover:text-signal"
+                aria-label={`Watch ${project.name} demo video`}
+              >
+                ⤢ demo
+              </button>
+            )}
           </div>
-        </button>
+        ) : (
+          /* recorded demo — click anywhere to expand */
+          <button
+            type="button"
+            onClick={() => setLightbox(true)}
+            tabIndex={open ? 0 : -1}
+            data-cursor
+            className="group block w-full text-left"
+            aria-label={`Expand ${project.name} demo and screenshots`}
+          >
+            <div className="relative">
+              <DeviceFrame variant={project.frame} url={project.links.live ?? project.links.github}>
+                <ProjectMedia project={project} open={open} />
+              </DeviceFrame>
+              <span className="pointer-events-none absolute right-3 top-3 z-20 rounded-full bg-void/70 px-3 py-1 font-mono text-[10px] text-text opacity-0 backdrop-blur transition-opacity group-hover:opacity-100">
+                {a ? "⤢ expand demo" : "⤢ expand"}
+              </span>
+            </div>
+          </button>
+        )}
 
         {/* architecture flow */}
         <div className="mt-7 rounded-2xl border border-line bg-[var(--void)]/40 p-4">
