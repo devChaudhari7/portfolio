@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import DeviceFrame from "@/components/ui/DeviceFrame";
 import MediaLightbox from "@/components/ui/MediaLightbox";
@@ -21,6 +22,7 @@ interface Props {
 export default function ProjectCase({ project, open, position, onClose, onPrev, onNext }: Props) {
   const [lightbox, setLightbox] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const reduced = useReducedMotion();
   const a = project.assets;
 
   useEffect(() => {
@@ -37,15 +39,20 @@ export default function ProjectCase({ project, open, position, onClose, onPrev, 
   }, [open, lightbox, onClose, onPrev, onNext]);
 
   return (
-    <article
+    <motion.article
       id={project.id}
       aria-label={`${project.name} — ${project.tagline}`}
       aria-hidden={!open}
       data-lenis-prevent
-      className={cn(
-        "case-panel fixed inset-0 z-[75] overflow-y-auto overscroll-contain",
-        open && "is-open",
-      )}
+      className="case-panel fixed inset-0 z-[75] overflow-y-auto overscroll-contain"
+      initial={false}
+      animate={
+        open
+          ? { opacity: 1, visibility: "visible" }
+          : { opacity: 0, transitionEnd: { visibility: "hidden" } }
+      }
+      transition={{ duration: reduced ? 0 : 0.4, ease: [0.16, 1, 0.3, 1] }}
+      style={{ pointerEvents: open ? "auto" : "none" }}
     >
       {/* backdrop — the living network stays visible behind (translucent, no costly filter) */}
       <button
@@ -57,7 +64,12 @@ export default function ProjectCase({ project, open, position, onClose, onPrev, 
       />
 
       <div className="relative z-10 flex min-h-full items-start justify-center p-4 py-20 sm:items-center sm:p-8">
-      <div className="case-card w-full max-w-3xl rounded-2xl border border-line-strong bg-[color-mix(in_oklab,var(--surface)_93%,transparent)] p-5 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.95)] sm:p-8">
+      <motion.div
+        className="case-card w-full max-w-3xl rounded-2xl border border-line-strong bg-[color-mix(in_oklab,var(--surface)_93%,transparent)] p-5 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.95)] sm:p-8"
+        initial={false}
+        animate={open ? { y: 0, scale: 1 } : { y: 18, scale: 0.985 }}
+        transition={{ duration: reduced ? 0 : 0.5, ease: [0.16, 1, 0.3, 1] }}
+      >
         {/* header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div className="flex items-baseline gap-4">
@@ -191,13 +203,24 @@ export default function ProjectCase({ project, open, position, onClose, onPrev, 
                   GitHub ↗
                 </a>
               )}
+              {project.proofLink && (
+                <a
+                  href={project.proofLink.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  tabIndex={open ? 0 : -1}
+                  className="inline-flex items-center gap-2 rounded-full border border-line-strong px-5 py-2.5 text-sm text-text transition-colors hover:border-signal hover:text-signal"
+                >
+                  {project.proofLink.label} ↗
+                </a>
+              )}
             </div>
             {project.flagged && (
               <p className="font-mono text-[11px] leading-relaxed text-gold/80">⚑ {project.flagged}</p>
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
       </div>
 
       <MediaLightbox open={lightbox} onClose={() => setLightbox(false)} title={project.name}>
@@ -240,6 +263,6 @@ export default function ProjectCase({ project, open, position, onClose, onPrev, 
           </p>
         )}
       </MediaLightbox>
-    </article>
+    </motion.article>
   );
 }

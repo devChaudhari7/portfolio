@@ -160,6 +160,7 @@ export interface Project {
   flow: ProjectFlowStep[]; // schematic architecture, left→right
   skills: string[]; // skill ids used (for network reconfigure)
   links: { live?: string; github?: string };
+  proofLink?: { label: string; href: string }; // optional extra link (e.g. on-chain proof)
   rating: number; // 0..1 — Trust Ring flourish
   assets?: ProjectAssets; // real media; falls back to a placeholder when absent
   accolade?: { label: string; gold?: boolean }; // hackathon / competition context
@@ -200,8 +201,36 @@ export const projects: Project[] = [
     },
   },
   {
-    id: "billai",
+    id: "fedchurnguard",
     index: "02",
+    name: "FedChurnGuard",
+    tagline: "Privacy-preserving federated churn prediction — no shared data.",
+    year: "2026",
+    frame: "browser",
+    lead: true,
+    stack: ["Python", "PyTorch", "Flower (FL)", "Solidity", "FastAPI", "Next.js"],
+    bullets: [
+      "Genuine cross-organization federated learning (Flower) on real, separately-owned datasets — telecom operators plus a streaming app, not one dataset artificially split — so companies train one churn model while raw customer data never leaves any silo.",
+      "A permissioned blockchain audit layer (Solidity + geth Clique PoA, deployed to Ethereum Sepolia) that rejects 100% of boosted model-poisoning attacks and records retention offers immutably — verifiable on Etherscan.",
+      "Record-level differential privacy (DP-SGD via Opacus) with verified ε-accounting, hardened against a strong LiRA membership-inference attack and defense.",
+      "A closed, explainable loop — exact TreeSHAP explanations → counterfactual recourse → a DRAI-ranked retention offer logged on-chain — with a live interactive demo driven by the real federated model and a paper in IEEE Access format.",
+    ],
+    why: "A real cross-org system, not one dataset artificially split — the core finding is that the transferability of churn signal across organizations governs when federation helps vs. hurts.",
+    flow: [
+      { label: "Federated train", note: "Flower · silos" },
+      { label: "DP-SGD", note: "Opacus · ε" },
+      { label: "Blockchain audit", note: "rejects poison" },
+      { label: "SHAP", note: "+ recourse" },
+      { label: "On-chain offer", note: "Sepolia" },
+    ],
+    skills: ["python", "pytorch", "solidity", "ethersjs", "fastapi", "nextjs", "react", "system-design"],
+    links: { live: "https://fedchurnguard.vercel.app" },
+    proofLink: { label: "On-chain proof", href: "https://sepolia.etherscan.io/address/0x92DBE7C05405D6fD4c723e1ac1481058a8BF1312" },
+    rating: 0.95,
+  },
+  {
+    id: "billai",
+    index: "03",
     name: "BillAI",
     tagline: "AI invoicing on WhatsApp.",
     year: "2026",
@@ -234,7 +263,7 @@ export const projects: Project[] = [
   },
   {
     id: "lexai",
-    index: "03",
+    index: "04",
     name: "LexAI",
     tagline: "AI legal drafting & Aadhaar e-sign for Indian businesses.",
     year: "2026",
@@ -267,7 +296,7 @@ export const projects: Project[] = [
   },
   {
     id: "voiceserve",
-    index: "04",
+    index: "05",
     name: "VoiceServe",
     tagline: "AI voice ordering & analytics for restaurants.",
     year: "2026",
@@ -301,7 +330,7 @@ export const projects: Project[] = [
   },
   {
     id: "hireai",
-    index: "05",
+    index: "06",
     name: "HireAi",
     tagline: "AI-powered technical hiring.",
     year: "2026",
@@ -333,7 +362,7 @@ export const projects: Project[] = [
   },
   {
     id: "blockestate",
-    index: "06",
+    index: "07",
     name: "BlockEstate",
     tagline: "Decentralized real estate marketplace.",
     year: "2024",
