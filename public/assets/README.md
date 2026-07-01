@@ -18,6 +18,7 @@ component for `next/image` / `<video>` (noted inline in the code).
       poster.jpg            #   ~1600×1000
       demo.mp4 + demo.webm
       shot-1.png …
+    mehfil/                 # web → browser frame (live: mehfil-dev.vercel.app) ~1600×1000 poster.png
     fedchurnguard/          # web → browser frame (live: fedchurnguard.vercel.app)
     lexai/                  # web → browser frame (live: lexai-rho.vercel.app)
     voiceserve/             # web → browser frame (live: pet-pooja-kappa.vercel.app)
