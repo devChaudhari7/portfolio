@@ -226,6 +226,7 @@ export const projects: Project[] = [
     ],
     skills: ["nextjs", "typescript", "tailwind", "react", "javascript", "architecture"],
     links: { live: "https://mehfil-dev.vercel.app", github: "https://github.com/devChaudhari7/mehfil" },
+    embed: true,
     rating: 0.95,
   },
   {
