@@ -14,7 +14,7 @@ export default function NotFound() {
           <line x1="84" y1="60" x2="114" y2="60" stroke="var(--muted)" strokeWidth="1.5" strokeDasharray="4 5" />
           <circle cx="40" cy="60" r="14" fill="none" stroke="var(--signal)" strokeOpacity="0.4" />
         </svg>
-        <p className="mono-label mb-4">// error · 404</p>
+        <p className="mono-label mb-4">{"// error · 404"}</p>
         <h1 className="display text-[clamp(2.5rem,8vw,5rem)]">Node not found.</h1>
         <p className="mt-4 max-w-md text-muted">
           That connection dropped — the node you&apos;re looking for isn&apos;t in the graph. Let&apos;s route you back to the core.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import NetworkCanvas from "@/components/network/NetworkCanvas";
 import ProjectCase from "./ProjectCase";
 import Ring from "@/components/ui/Ring";
@@ -16,26 +16,25 @@ import {
 } from "@/lib/projectNav";
 import { cn } from "@/lib/cn";
 
+// The active project is derived from the URL hash (an external store): SSR-safe,
+// and it updates on history nav + our own open/close (projectnav) events.
+function subscribeActive(onChange: () => void) {
+  window.addEventListener("popstate", onChange);
+  window.addEventListener(PROJECT_NAV_EVENT, onChange);
+  return () => {
+    window.removeEventListener("popstate", onChange);
+    window.removeEventListener(PROJECT_NAV_EVENT, onChange);
+  };
+}
+function getActiveSnapshot(): string | null {
+  const h = currentProjectHash();
+  return projectById.has(h) ? h : null;
+}
+const getActiveServerSnapshot = (): string | null => null;
+
 export default function Projects() {
   const { scrollTo } = useSmoothScroll();
-  const [active, setActive] = useState<string | null>(null);
-
-  // Single source of truth: the URL hash. Sync on mount, on history nav, and
-  // on our own open/close events. The canvas is never unmounted.
-  const sync = useCallback(() => {
-    const h = currentProjectHash();
-    setActive(projectById.has(h) ? h : null);
-  }, []);
-
-  useEffect(() => {
-    sync();
-    window.addEventListener("popstate", sync);
-    window.addEventListener(PROJECT_NAV_EVENT, sync);
-    return () => {
-      window.removeEventListener("popstate", sync);
-      window.removeEventListener(PROJECT_NAV_EVENT, sync);
-    };
-  }, [sync]);
+  const active = useSyncExternalStore(subscribeActive, getActiveSnapshot, getActiveServerSnapshot);
 
   // Bring the network into view behind a freshly opened panel.
   useEffect(() => {
@@ -81,7 +80,7 @@ export default function Projects() {
               className="absolute inset-0 h-full w-full"
             />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5">
-              <p className="mono-label">// the system · {projects.length} subsystems online</p>
+              <p className="mono-label">{`// the system · ${projects.length} subsystems online`}</p>
               <p className="hidden font-mono text-[11px] text-muted sm:block">
                 click a node to dive in · or pick one below
               </p>

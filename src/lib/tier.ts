@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 /**
  * Rendering tiers (brief §8 — adaptive fidelity):
@@ -47,13 +47,15 @@ function detectTier(): Tier {
   return "B";
 }
 
-/** Resolve the tier once on the client. Defaults to C (safe) during SSR. */
+const noopSubscribe = () => () => {};
+
+/** Resolve the tier on the client (once). Defaults to C (safe) during SSR. */
 export function useTier(): TierConfig {
-  const [config, setConfig] = useState<TierConfig>(CONFIGS.C);
-  useEffect(() => {
-    setConfig(CONFIGS[detectTier()]);
-  }, []);
-  return config;
+  return useSyncExternalStore(
+    noopSubscribe,
+    () => CONFIGS[detectTier()], // stable object ref per tier → no re-render loop
+    () => CONFIGS.C,
+  );
 }
 
 export function getTierConfig(tier: Tier): TierConfig {

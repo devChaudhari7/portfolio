@@ -17,7 +17,7 @@ export default function SectionIndex({
         style={{ background: "linear-gradient(90deg, transparent, var(--signal))" }}
         aria-hidden="true"
       />
-      <span className="text-signal/90">// {index}</span>
+      <span className="text-signal/90">{`// ${index}`}</span>
       <span>— {label}</span>
     </div>
   );

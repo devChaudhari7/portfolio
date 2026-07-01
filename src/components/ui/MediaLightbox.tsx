@@ -53,7 +53,7 @@ export default function MediaLightbox({ open, onClose, title, children }: Props)
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="mb-3 flex items-center justify-between">
-              <span className="font-mono text-xs tracking-widest text-signal">// {title}</span>
+              <span className="font-mono text-xs tracking-widest text-signal">{`// ${title}`}</span>
               <button
                 ref={closeRef}
                 onClick={onClose}

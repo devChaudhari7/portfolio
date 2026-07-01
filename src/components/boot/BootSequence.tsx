@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { site } from "@/lib/content";
+import { useReducedMotion } from "@/lib/hooks";
 
 const rnd = (v: number) => Math.round(v * 100) / 100;
 const NODES = Array.from({ length: 9 }, (_, i) => {
@@ -12,32 +13,28 @@ const NODES = Array.from({ length: 9 }, (_, i) => {
 
 export default function BootSequence() {
   const [show, setShow] = useState(true);
-  const [reduced, setReduced] = useState(false);
+  const reduced = useReducedMotion();
   const doneRef = useRef(false);
 
-  const finish = () => {
+  const finish = useCallback(() => {
     if (doneRef.current) return;
     doneRef.current = true;
     try {
       sessionStorage.setItem("booted", "1");
     } catch {}
     setShow(false);
-  };
+  }, []);
 
   useEffect(() => {
     const rm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setReduced(rm);
     let already = false;
     try {
       already = sessionStorage.getItem("booted") === "1";
     } catch {}
-    if (already) {
-      doneRef.current = true;
-      setShow(false);
-      return;
-    }
-    const ms = rm ? 700 : 2500;
-    const t = setTimeout(finish, ms);
+    // Hide immediately if already shown this session, else after the boot
+    // duration — both go through finish() in a callback, never a direct
+    // setState in the effect body.
+    const t = setTimeout(finish, already ? 0 : rm ? 700 : 2500);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Enter" || e.key === "Escape" || e.key === " ") finish();
     };
@@ -46,8 +43,7 @@ export default function BootSequence() {
       clearTimeout(t);
       window.removeEventListener("keydown", onKey);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [finish]);
 
   const name = site.name.toUpperCase();
 

@@ -63,7 +63,7 @@ export default function TelemetryHUD() {
         <span className="text-line-strong">|</span>
         <span>UP {fmt(uptime)}</span>
         <span className="text-line-strong">|</span>
-        <span className="text-signal/90">// {route}</span>
+        <span className="text-signal/90">{`// ${route}`}</span>
         <svg width="64" height="20" viewBox="0 0 64 20" className="overflow-visible" fill="none">
           <path d={ECG_PATH} stroke="var(--signal)" strokeOpacity="0.35" strokeWidth="1" />
           {!reduced && (
