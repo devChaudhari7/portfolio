@@ -83,7 +83,7 @@ export default function Skills() {
         <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <Reveal>
-              <SectionIndex index="03" label="skills" className="mb-6" />
+              <SectionIndex index="04" label="skills" className="mb-6" />
             </Reveal>
             <Reveal delay={0.05}>
               <h2 className="display text-[clamp(2rem,6vw,4rem)]">A constellation of capability.</h2>

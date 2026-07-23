@@ -1,6 +1,7 @@
 import Hero from "@/components/sections/Hero";
 import About from "@/components/sections/About";
 import Projects from "@/components/sections/Projects";
+import GenAILab from "@/components/sections/GenAILab";
 import Skills from "@/components/sections/Skills";
 import Timeline from "@/components/sections/Timeline";
 import Achievements from "@/components/sections/Achievements";
@@ -12,6 +13,7 @@ export default function Home() {
       <Hero />
       <About />
       <Projects />
+      <GenAILab />
       <Skills />
       <Timeline />
       <Achievements />

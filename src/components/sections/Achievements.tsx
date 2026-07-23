@@ -9,7 +9,7 @@ export default function Achievements() {
     <section id="achievements" data-route="achievements" className="section-pad relative">
       <div className="container-edge">
         <Reveal>
-          <SectionIndex index="05" label="achievements" className="mb-6" />
+          <SectionIndex index="06" label="achievements" className="mb-6" />
         </Reveal>
         <Reveal delay={0.05}>
           <h2 className="display mb-4 text-[clamp(2rem,6vw,4rem)]">Nodes that lit up.</h2>

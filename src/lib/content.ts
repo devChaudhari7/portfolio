@@ -428,6 +428,107 @@ export const projects: Project[] = [
 
 export const projectById = new Map(projects.map((p) => [p.id, p]));
 
+/* --------------------------------- GenAI Lab -------------------------------- */
+
+/** A measured result. `from` is present only where a real baseline was recorded. */
+export interface LabMetric {
+  label: string;
+  from?: string;
+  to: string;
+}
+
+export interface LabExperiment {
+  id: string;
+  index: string; // "E1"
+  name: string;
+  blurb: string;
+  stack: string[];
+  /** Only numbers actually measured and committed in the repo. */
+  metrics?: LabMetric[];
+  note?: string;
+  live?: string;
+  code?: string;
+  /** eval still to run — shown honestly instead of inventing numbers */
+  pending?: string;
+}
+
+export const labIntro =
+  "Six GenAI systems built to be defended, not demoed — each with a real eval harness, measured numbers, and a study guide. Three run live; open one and try it.";
+
+export const labExperiments: LabExperiment[] = [
+  {
+    id: "research-assistant",
+    index: "E1",
+    name: "Multi-Agent Research Assistant",
+    blurb:
+      "A LangGraph agent team answers from the live web with verifiable citations: a planner decomposes the question, parallel researchers search and read sources, a writer synthesises a cited report.",
+    stack: ["LangGraph", "Groq / Gemini", "DuckDuckGo", "trafilatura", "Streamlit"],
+    note: "Every external call is expendable, the run is not — a 7-step retry/fallback ladder (backoff, JSON self-repair, search and fetch fallbacks) keeps a run alive through failures.",
+    pending: "citation-validity eval running",
+    live: "https://dev-research.streamlit.app/",
+  },
+  {
+    id: "support-agent",
+    index: "E2",
+    name: "Support Agent with Long-Term Memory",
+    blurb:
+      "A support agent that remembers: per-user memory in a vector store, ticket classification, tool calls against mock CRM/order APIs, and confidence-based escalation to a human.",
+    stack: ["Vector memory", "Tool calling", "FastAPI mocks", "Python"],
+    pending: "scenario eval to run",
+  },
+  {
+    id: "finetuned-slm",
+    index: "E3",
+    name: "Fine-Tuned Small Language Model",
+    blurb:
+      "QLoRA fine-tune of Llama-3.2-1B on ~27k customer-support conversations, so a 0.8 GB model that runs privately on a laptop replies in-format instead of rambling.",
+    stack: ["QLoRA", "Llama-3.2-1B", "PEFT", "GGUF + Ollama"],
+    metrics: [
+      { label: "ROUGE-L F1", from: "0.2374", to: "0.4418" },
+      { label: "BERTScore F1", from: "0.8680", to: "0.9197" },
+    ],
+    note: "Beats the base model on 95% of 300 held-out cases. Trained in 22 min on one consumer GPU, exported to GGUF — total cost $0.",
+  },
+  {
+    id: "hybrid-rag",
+    index: "E4",
+    name: "Hybrid RAG over Legal Contracts",
+    blurb:
+      "Retrieval over 438 pages of SEC-filed contracts: BM25 + dense embeddings fused by Reciprocal Rank Fusion, then cross-encoder reranking, with page-level citations on every claim.",
+    stack: ["ChromaDB", "BM25 + dense", "RRF", "Cross-encoder", "RAGAS"],
+    metrics: [
+      { label: "Hit-rate@5", from: "60.0%", to: "65.7%" },
+      { label: "Refusal accuracy", to: "100%" },
+    ],
+    note: "Cut false refusals 33% vs a dense-only baseline; 96% of answers carried well-formed [contract, p.N] citations.",
+  },
+  {
+    id: "text-to-sql",
+    index: "E5",
+    name: "Self-Correcting Text-to-SQL",
+    blurb:
+      "Natural language to SQL that fixes itself: generated queries run read-only, and SQLite errors or empty result-sets are fed back to the model for up to three corrective attempts.",
+    stack: ["Groq llama-3.3-70b", "Spider benchmark", "SQLite", "Streamlit"],
+    note: "SELECT-only executor with a query watchdog and a deterministic mock provider — the whole correction loop verified by 9/9 offline behavioural tests before any API spend.",
+    pending: "execution-accuracy benchmark to run",
+    live: "https://dev-textsql.streamlit.app/",
+  },
+  {
+    id: "eval-guardrails",
+    index: "E6",
+    name: "LLM Eval Harness & Guardrails",
+    blurb:
+      "The safety net for the rest of the lab: deterministic metrics plus an LLM judge score a RAG pipeline, while explainable input guardrails catch prompt injection and toxicity.",
+    stack: ["LLM-as-judge", "Guardrails", "CI gate", "Streamlit"],
+    metrics: [
+      { label: "Injection detection", to: "89.8% acc · 8.3% FPR" },
+      { label: "Toxicity detection", to: "96.7% acc · 0% FPR" },
+    ],
+    note: "Case-level regression gate caught what the aggregate hid — a change that lifted refusal accuracy 70%→80% while silently breaking a previously-correct case.",
+    live: "https://dev-guardrails.streamlit.app/",
+  },
+];
+
 /* ------------------------------- Experience -------------------------------- */
 
 export interface TimelineItem {

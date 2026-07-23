@@ -8,6 +8,7 @@ const STATIONS = [
   { id: "hero", label: "Origin" },
   { id: "about", label: "About" },
   { id: "work", label: "Work" },
+  { id: "lab", label: "Lab" },
   { id: "skills", label: "Skills" },
   { id: "path", label: "Path" },
   { id: "achievements", label: "Signals" },

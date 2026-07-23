@@ -71,7 +71,7 @@ export default function Timeline() {
     <section id="path" data-route="path" className="section-pad relative">
       <div className="container-edge">
         <Reveal>
-          <SectionIndex index="04" label="experience & education" className="mb-6" />
+          <SectionIndex index="05" label="experience & education" className="mb-6" />
         </Reveal>
         <Reveal delay={0.05}>
           <h2 className="display mb-14 text-[clamp(2rem,6vw,4rem)]">Signal along the path.</h2>

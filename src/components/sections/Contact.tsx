@@ -19,7 +19,7 @@ export default function Contact() {
       />
       <div className="container-edge relative flex flex-col items-center text-center">
         <Reveal>
-          <SectionIndex index="06" label="contact" className="mb-8 justify-center" />
+          <SectionIndex index="07" label="contact" className="mb-8 justify-center" />
         </Reveal>
 
         <Reveal delay={0.05}>
