@@ -33,7 +33,7 @@ export const about = {
   portrait: "/assets/me/portrait.jpg",
   paragraphs: [
     "I'm a Computer Science engineering student at Nirma University (and a Diploma topper before that) who learns by building real, complete products — not tutorials. I like owning a project end to end: designing the data model, building the backend, crafting the interface, and shipping it to production.",
-    "My work spans AI/LLM platforms, full-stack web apps, cross-platform mobile, and a bit of blockchain. I've shipped a live AI SaaS solo in two weeks, built a social platform that runs on iOS and Android from a single codebase, and placed in the Top 10 nationally in an AI hackathon. What ties it together is a focus on craftsmanship — clean architecture, secure multi-tenant systems, and interfaces that feel considered.",
+    "My work spans AI/LLM platforms, full-stack web apps, cross-platform mobile, and a bit of blockchain. I've shipped a live AI SaaS solo in two weeks, built a social platform that runs on iOS and Android from a single codebase, and competed in national AI hackathons at IIT Gandhinagar and Nirma University. What ties it together is a focus on craftsmanship — clean architecture, secure multi-tenant systems, and interfaces that feel considered.",
   ],
   kicker: "I'm always building something. When I'm not, I'm probably figuring out how to ship the next thing faster and cleaner.",
 } as const;
@@ -391,7 +391,7 @@ export const projects: Project[] = [
       videoFull: asset("hireai", "demo-full.mp4"),
       shots: [1, 2, 3, 4].map((n) => asset("hireai", `shot-${n}.png`)),
     },
-    accolade: { label: "Top 10 National · Codeversity AI '26", gold: true },
+    accolade: { label: "Codeversity '26 · National Hackathon" },
   },
   {
     id: "blockestate",
@@ -594,32 +594,52 @@ export interface Achievement {
   detail: string;
   date: string;
   highlight?: boolean; // gold
+  credentialId?: string;
+  credentialUrl?: string;
+  /** scan of the certificate — drop files in /public/assets/certificates/ */
+  image?: string;
 }
 
 export const achievements: Achievement[] = [
   {
-    id: "codeversity",
-    title: "Top 10 Nationally",
-    detail: "Codeversity National Hackathon — AI Domain",
-    date: "Feb 2026",
+    id: "aws-cloud-foundations",
+    title: "AWS Academy Graduate — Cloud Foundations",
+    detail:
+      "Amazon Web Services · 20 course hours across compute, storage, networking, and security fundamentals",
+    date: "Apr 2026",
     highlight: true,
+    credentialUrl: "https://www.credly.com/go/Ub7LwnCO",
   },
   {
-    id: "sih",
-    title: "Smart India Hackathon 2024 Finalist",
-    detail: "Team CheatBot, for Bharat Electronics Limited",
-    date: "2024",
+    id: "hackamined",
+    title: "HACKaMINeD 2026 — National Hackathon",
+    detail:
+      "Nirma University × Binghamton University · AI-Powered Revenue & Voice Copilot for Restaurants (Petpooja track)",
+    date: "Mar 2026",
+    credentialId: "d1655fc6-d1c9-482b-819c-18da8f5749d0",
+    credentialUrl:
+      "https://verification.givemycertificate.com/v/d1655fc6-d1c9-482b-819c-18da8f5749d0",
   },
   {
-    id: "ssip",
-    title: "SSIP — New India Vibrant Hackathon",
-    detail: "Recognized under Gujarat's Student Startup & Innovation Policy",
-    date: "Nov 2023",
+    id: "codeversity",
+    title: "Codeversity National Hackathon 2026",
+    detail: "Artificial Intelligence domain · Team TechNova · IIT Gandhinagar",
+    date: "Feb 2026",
+    credentialId: "COD1224VER",
   },
   {
     id: "dlai",
-    title: "Machine Learning Certification",
-    detail: "DeepLearning.AI on Coursera",
+    title: "Machine Learning Specialization",
+    detail: "DeepLearning.AI & Stanford Online on Coursera · 3-course specialization",
     date: "Oct 2025",
+    credentialId: "TONYR3Z0525Y",
+  },
+  {
+    id: "ssip",
+    title: "SSIP — New India Vibrant Hackathon 2023",
+    detail:
+      "Team CheatBot · Government Polytechnic Ahmedabad · Regional round at Anant National University",
+    date: "Nov 2023",
+    credentialId: "TM001240",
   },
 ];

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: `%s · ${site.name}`,
   },
   description:
-    "Dev Chaudhari builds production software end to end — AI/LLM platforms, full-stack web, cross-platform mobile, and blockchain. Top 10 nationally in an AI hackathon.",
+    "Dev Chaudhari builds production software end to end — AI/LLM platforms, full-stack web, cross-platform mobile, and blockchain. AWS Academy Cloud Foundations graduate.",
   keywords: [
     "Dev Chaudhari",
     "Full-Stack Engineer",

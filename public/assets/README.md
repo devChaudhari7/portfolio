@@ -40,3 +40,17 @@ component for `next/image` / `<video>` (noted inline in the code).
 - Portrait → `src/components/sections/About.tsx`
 - Project media (frame + lightbox) → `src/components/sections/ProjectCase.tsx` (`MediaPlaceholder`)
 - Device frames (phone/browser chrome) → `src/components/ui/DeviceFrame.tsx`
+
+## Certificates (Achievements section)
+Drop the certificate scans here as PNG/JPG, then tell me and I will wire them up:
+
+```
+  certificates/
+    aws-cloud-foundations.png   # AWS Academy Graduate — Cloud Foundations
+    hackamined-2026.png         # HACKaMINeD 2026, Nirma University
+    codeversity-2026.png        # Codeversity National Hackathon 2026
+    ml-specialization.png       # Coursera / DeepLearning.AI + Stanford
+    ssip-2023.png               # SSIP New India Vibrant Hackathon 2023
+```
+Landscape scans, ~1600px on the long edge is plenty. Consumed by
+`src/components/sections/Achievements.tsx` via the `image` field on each achievement.
