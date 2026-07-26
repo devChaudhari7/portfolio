@@ -546,6 +546,19 @@ export interface TimelineItem {
 
 export const timeline: TimelineItem[] = [
   {
+    id: "alvi",
+    kind: "work",
+    title: "Full Stack Developer Intern",
+    org: "Alvi Software Pvt. Ltd.",
+    meta: "Ahmedabad, Gujarat",
+    period: "May 2026 – Jul 2026",
+    bullets: [
+      "Built across the stack in a production codebase — front-end interfaces (HTML, CSS, JavaScript) and back-end services — during a two-month full-stack internship.",
+      "Handled database management and SQL alongside REST API integration, debugging, and general software development tasks.",
+      "Collaborated with the development team to deliver assigned work to schedule, gaining practical end-to-end experience in full-stack application development.",
+    ],
+  },
+  {
     id: "brainybeam",
     kind: "work",
     title: "Software Development Intern (Android)",

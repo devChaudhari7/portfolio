@@ -25,6 +25,8 @@ export interface GitHubProfile {
   following: number;
   since: string; // "2023"
   topRepos: GitHubRepo[];
+  /** every non-fork repo, newest first — powers the in-page browser */
+  allRepos: GitHubRepo[];
   languages: { name: string; pct: number }[];
 }
 
@@ -34,6 +36,11 @@ export interface LeetCodeProfile {
   ranking: number | null;
   solved: { all: number; easy: number; medium: number; hard: number };
   totals: { all: number; easy: number; medium: number; hard: number };
+  /** recently accepted problems — the browsable feed */
+  recent: { title: string; slug: string }[];
+  streak: number | null;
+  activeDays: number | null;
+  topTags: { name: string; count: number }[];
 }
 
 /** Brand colours for the language bar — falls back to the signal colour. */
@@ -83,6 +90,14 @@ export async function getGitHubProfile(user: string): Promise<GitHubProfile | nu
       .slice(0, 5)
       .map(([name, n]) => ({ name, pct: Math.round((n / total) * 100) }));
 
+    const shape = (r: (typeof own)[number]): GitHubRepo => ({
+      name: r.name,
+      description: r.description,
+      language: r.language,
+      stars: r.stargazers_count,
+      url: r.html_url,
+    });
+
     const topRepos = own
       .slice()
       .sort(
@@ -91,13 +106,9 @@ export async function getGitHubProfile(user: string): Promise<GitHubProfile | nu
           +new Date(b.updated_at) - +new Date(a.updated_at),
       )
       .slice(0, 3)
-      .map((r) => ({
-        name: r.name,
-        description: r.description,
-        language: r.language,
-        stars: r.stargazers_count,
-        url: r.html_url,
-      }));
+      .map(shape);
+
+    const allRepos = own.map(shape); // already sorted by recently-updated
 
     return {
       login: u.login,
@@ -107,6 +118,7 @@ export async function getGitHubProfile(user: string): Promise<GitHubProfile | nu
       following: u.following,
       since: String(new Date(u.created_at).getFullYear()),
       topRepos,
+      allRepos,
       languages,
     };
   } catch {
@@ -120,7 +132,14 @@ export async function getLeetCodeProfile(user: string): Promise<LeetCodeProfile 
       username
       profile{ ranking userAvatar }
       submitStatsGlobal{ acSubmissionNum{ difficulty count } }
+      userCalendar{ streak totalActiveDays }
+      tagProblemCounts{
+        advanced{ tagName problemsSolved }
+        intermediate{ tagName problemsSolved }
+        fundamental{ tagName problemsSolved }
+      }
     }
+    recentAcSubmissionList(username:$u, limit:8){ title titleSlug }
     allQuestionsCount{ difficulty count }
   }`;
   try {
@@ -146,6 +165,19 @@ export async function getLeetCodeProfile(user: string): Promise<LeetCodeProfile 
     const ac = m.submitStatsGlobal?.acSubmissionNum ?? [];
     const all = json?.data?.allQuestionsCount ?? [];
 
+    const tagGroups = m.tagProblemCounts ?? {};
+    const topTags = [
+      ...(tagGroups.fundamental ?? []),
+      ...(tagGroups.intermediate ?? []),
+      ...(tagGroups.advanced ?? []),
+    ]
+      .map((t: { tagName: string; problemsSolved: number }) => ({
+        name: t.tagName,
+        count: t.problemsSolved,
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 8);
+
     return {
       username: m.username,
       avatar: m.profile?.userAvatar ?? null,
@@ -162,6 +194,12 @@ export async function getLeetCodeProfile(user: string): Promise<LeetCodeProfile 
         medium: pick(all, "Medium"),
         hard: pick(all, "Hard"),
       },
+      recent: (json?.data?.recentAcSubmissionList ?? []).map(
+        (s: { title: string; titleSlug: string }) => ({ title: s.title, slug: s.titleSlug }),
+      ),
+      streak: m.userCalendar?.streak ?? null,
+      activeDays: m.userCalendar?.totalActiveDays ?? null,
+      topTags,
     };
   } catch {
     return null;

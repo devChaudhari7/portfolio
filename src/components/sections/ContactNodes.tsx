@@ -4,7 +4,8 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { useInView, useReducedMotion } from "@/lib/hooks";
-import { site } from "@/lib/content";
+import ProfilePhone, { type AppId } from "./ProfilePhone";
+import { site, timeline } from "@/lib/content";
 import { LANGUAGE_COLORS, type GitHubProfile, type LeetCodeProfile } from "@/lib/social";
 import { cn } from "@/lib/cn";
 
@@ -16,13 +17,16 @@ function NodeScreen({
   live,
   href,
   action,
+  onAction,
   children,
   className,
 }: {
   label: string;
   live?: boolean;
-  href: string;
+  href?: string;
   action: string;
+  /** when given, the node opens the in-page phone instead of a new tab */
+  onAction?: () => void;
   children: React.ReactNode;
   className?: string;
 }) {
@@ -55,14 +59,24 @@ function NodeScreen({
         {children}
       </div>
 
-      <a
-        href={href}
-        target={href.startsWith("http") ? "_blank" : undefined}
-        rel="noreferrer"
-        className="mt-2 rounded-full border border-line-strong px-4 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-text transition-colors hover:border-signal hover:text-signal"
-      >
-        {action}
-      </a>
+      {onAction ? (
+        <button
+          type="button"
+          onClick={onAction}
+          className="mt-2 rounded-full border border-line-strong px-4 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-text transition-colors hover:border-signal hover:text-signal"
+        >
+          {action}
+        </button>
+      ) : (
+        <a
+          href={href}
+          target={href?.startsWith("http") ? "_blank" : undefined}
+          rel="noreferrer"
+          className="mt-2 rounded-full border border-line-strong px-4 py-2 text-center font-mono text-[10px] uppercase tracking-widest text-text transition-colors hover:border-signal hover:text-signal"
+        >
+          {action}
+        </a>
+      )}
     </article>
   );
 }
@@ -78,9 +92,9 @@ function Stat({ n, label }: { n: number | string; label: string }) {
 
 /* ----------------------------------------------------------------- github -- */
 
-function GitHubNode({ data }: { data: GitHubProfile | null }) {
+function GitHubNode({ data, onOpen }: { data: GitHubProfile | null; onOpen: () => void }) {
   return (
-    <NodeScreen label="// github" live={!!data} href={site.github} action="open github ↗">
+    <NodeScreen label="// github" live={!!data} onAction={onOpen} action="browse profile">
       {data ? (
         <div className="flex h-full flex-col pt-3">
           <div className="flex items-center gap-3">
@@ -149,7 +163,7 @@ function GitHubNode({ data }: { data: GitHubProfile | null }) {
 
 /* --------------------------------------------------------------- leetcode -- */
 
-function LeetCodeNode({ data }: { data: LeetCodeProfile | null }) {
+function LeetCodeNode({ data, onOpen }: { data: LeetCodeProfile | null; onOpen: () => void }) {
   const [ref, inView] = useInView<HTMLDivElement>({ threshold: 0.4 }, true);
   const reduced = useReducedMotion();
 
@@ -166,7 +180,7 @@ function LeetCodeNode({ data }: { data: LeetCodeProfile | null }) {
     : [];
 
   return (
-    <NodeScreen label="// leetcode" live={!!data} href={site.leetcode} action="open leetcode ↗">
+    <NodeScreen label="// leetcode" live={!!data} onAction={onOpen} action="browse profile">
       {data ? (
         <div ref={ref} className="flex h-full flex-col items-center pt-4">
           {/* solved ring — the Trust Ring motif, again */}
@@ -218,7 +232,9 @@ function LeetCodeNode({ data }: { data: LeetCodeProfile | null }) {
 
           {data.ranking && (
             <p className="mt-auto pt-3 font-mono text-[9px] text-muted">
-              rank #{data.ranking.toLocaleString()}
+              {/* explicit locale: the visitor's locale must not change the
+                  markup, or SSR and client disagree (en-IN groups as 16,82,668) */}
+              rank #{data.ranking.toLocaleString("en-US")}
             </p>
           )}
         </div>
@@ -233,9 +249,9 @@ function LeetCodeNode({ data }: { data: LeetCodeProfile | null }) {
 
 /** LinkedIn offers no public API and blocks framing, so this is a styled card
  *  built from information we already hold — never invented stats. */
-function LinkedInNode() {
+function LinkedInNode({ onOpen }: { onOpen: () => void }) {
   return (
-    <NodeScreen label="// linkedin" href={site.linkedin} action="connect on linkedin ↗">
+    <NodeScreen label="// linkedin" onAction={onOpen} action="browse profile">
       <div className="flex h-full flex-col pt-3">
         <div
           className="-mx-4 -mt-4 h-14"
@@ -254,15 +270,17 @@ function LinkedInNode() {
           <p className="mt-1 font-mono text-[9px] text-muted">{site.location}</p>
         </div>
 
+        {/* derived from the same timeline the Experience section uses, so it
+            can never drift out of sync */}
         <ul className="mt-4 space-y-1.5 border-t border-line pt-3">
-          {["Nirma University — B.Tech CS", "BrainyBeam · Android SDE Intern", "InfoLabz · SDE Intern"].map(
-            (l) => (
-              <li key={l} className="flex items-start gap-2 font-mono text-[9px] leading-relaxed text-muted">
-                <span className="mt-1 h-1 w-1 flex-none rounded-full bg-signal/70" />
-                {l}
-              </li>
-            ),
-          )}
+          {timeline.slice(0, 3).map((t) => (
+            <li key={t.id} className="flex items-start gap-2 font-mono text-[9px] leading-relaxed text-muted">
+              <span className="mt-1 h-1 w-1 flex-none rounded-full bg-signal/70" />
+              <span className="truncate">
+                {t.org} · {t.title}
+              </span>
+            </li>
+          ))}
         </ul>
 
         <p className="mt-auto pt-3 font-mono text-[9px] text-signal/80">open to internships</p>
@@ -404,23 +422,37 @@ export default function ContactNodes({
   github: GitHubProfile | null;
   leetcode: LeetCodeProfile | null;
 }) {
+  const [openApp, setOpenApp] = useState<AppId | null>(null);
+
   return (
-    <div className="grid w-full grid-cols-1 gap-4 text-left sm:grid-cols-2 lg:grid-cols-6">
-      <div className="lg:col-span-2">
-        <GitHubNode data={github} />
+    <>
+      <div className="grid w-full grid-cols-1 gap-4 text-left sm:grid-cols-2 lg:grid-cols-6">
+        <div className="lg:col-span-2">
+          <GitHubNode data={github} onOpen={() => setOpenApp("github")} />
+        </div>
+        <div className="lg:col-span-2">
+          <LeetCodeNode data={leetcode} onOpen={() => setOpenApp("leetcode")} />
+        </div>
+        <div className="lg:col-span-2">
+          <LinkedInNode onOpen={() => setOpenApp("linkedin")} />
+        </div>
+        <div className="lg:col-span-3">
+          <PhoneNode />
+        </div>
+        <div className="lg:col-span-3">
+          <LocationNode />
+        </div>
       </div>
-      <div className="lg:col-span-2">
-        <LeetCodeNode data={leetcode} />
-      </div>
-      <div className="lg:col-span-2">
-        <LinkedInNode />
-      </div>
-      <div className="lg:col-span-3">
-        <PhoneNode />
-      </div>
-      <div className="lg:col-span-3">
-        <LocationNode />
-      </div>
-    </div>
+
+      {/* browse the real profiles in-page — no new tab needed */}
+      <ProfilePhone
+        open={openApp !== null}
+        app={openApp ?? "github"}
+        onAppChange={setOpenApp}
+        onClose={() => setOpenApp(null)}
+        github={github}
+        leetcode={leetcode}
+      />
+    </>
   );
 }
