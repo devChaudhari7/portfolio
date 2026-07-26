@@ -50,7 +50,12 @@ component for `next/image` / `<video>` (noted inline in the code).
     codeversity.png                 # Codeversity National Hackathon 2026
     ssip.png                        # SSIP New India Vibrant Hackathon 2023
     coursera-ml-specialization.pdf  # Coursera / DeepLearning.AI + Stanford
+    claude-101.pdf                  # Anthropic — Claude 101
+    claude-ai-fluency.pdf           # Anthropic — AI Fluency: Framework & Foundations
 ```
+
+The 19 Google Cloud Skill Badges are not stored here — that entry links straight
+to the Credly profile (credly.com/users/dev087), which is the canonical source.
 
 PNG scans open in the lightbox via the `image` field on each achievement in
 `src/lib/content.ts`; the Coursera PDF can't be rendered by `next/image`, so it's

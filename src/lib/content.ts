@@ -628,6 +628,28 @@ export const achievements: Achievement[] = [
     image: "/assets/certificates/aws.png",
   },
   {
+    id: "gcloud-badges",
+    title: "19 Google Cloud Skill Badges",
+    detail:
+      "Google Cloud Skills Boost · hands-on labs across GenAI (Vertex AI prompt design, Gemini + Streamlit), compute & networking, storage, Pub/Sub, Cloud Functions, Looker & Dataplex",
+    date: "Oct 2025",
+    credentialUrl: "https://www.credly.com/users/dev087",
+  },
+  {
+    id: "claude-101",
+    title: "Claude 101",
+    detail: "Anthropic · working effectively with Claude",
+    date: "2026",
+    credentialUrl: "/assets/certificates/claude-101.pdf",
+  },
+  {
+    id: "claude-ai-fluency",
+    title: "AI Fluency: Framework & Foundations",
+    detail: "Anthropic · principles and practice for working fluently with AI",
+    date: "2026",
+    credentialUrl: "/assets/certificates/claude-ai-fluency.pdf",
+  },
+  {
     id: "hackamined",
     title: "HACKaMINeD 2026 — National Hackathon",
     detail:
