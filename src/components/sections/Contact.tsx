@@ -1,15 +1,17 @@
 import Reveal from "@/components/ui/Reveal";
 import SectionIndex from "@/components/ui/SectionIndex";
+import ContactNodes from "./ContactNodes";
 import { site } from "@/lib/content";
+import { getGitHubProfile, getLeetCodeProfile } from "@/lib/social";
 
-const EDGES = [
-  { label: "GitHub", value: site.githubHandle, href: site.github },
-  { label: "LinkedIn", value: site.linkedinHandle, href: site.linkedin },
-  { label: "Phone", value: site.phone, href: `tel:${site.phoneHref}` },
-  { label: "Location", value: site.location, href: undefined },
-];
+export default async function Contact() {
+  // Live profile data, fetched on the server and revalidated hourly (ISR).
+  // Both fail soft — a dead API degrades the node, it never breaks the page.
+  const [github, leetcode] = await Promise.all([
+    getGitHubProfile("devChaudhari7"),
+    getLeetCodeProfile(site.leetcodeUser),
+  ]);
 
-export default function Contact() {
   return (
     <section id="contact" data-route="contact" className="section-pad relative overflow-hidden">
       <div
@@ -63,29 +65,12 @@ export default function Contact() {
           <p className="mt-8 select-all font-mono text-sm text-text/80">{site.email}</p>
         </Reveal>
 
-        {/* socials as branching edges */}
-        <Reveal delay={0.25}>
-          <ul className="mt-12 grid w-full max-w-3xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-4">
-            {EDGES.map((e) => {
-              const inner = (
-                <span className="flex h-full flex-col items-center gap-1 bg-[var(--surface)] px-4 py-5 transition-colors group-hover:bg-[var(--elevated)]">
-                  <span className="mono-label">{e.label}</span>
-                  <span className="text-sm text-text/85 transition-colors group-hover:text-signal">{e.value}</span>
-                </span>
-              );
-              return (
-                <li key={e.label} className="group">
-                  {e.href ? (
-                    <a href={e.href} target={e.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" className="block h-full">
-                      {inner}
-                    </a>
-                  ) : (
-                    inner
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+        {/* the network's outer nodes — each one alive */}
+        <Reveal delay={0.25} className="w-full">
+          <div className="mt-16 w-full">
+            <p className="mono-label mb-5 text-center">{"// connected nodes"}</p>
+            <ContactNodes github={github} leetcode={leetcode} />
+          </div>
         </Reveal>
       </div>
     </section>

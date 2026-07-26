@@ -44,7 +44,13 @@ export function useInView<T extends Element>(
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    if (!node || typeof IntersectionObserver === "undefined") return;
+    if (!node) return;
+    // No IntersectionObserver (very old browsers): reveal instead of hiding
+    // forever. Deferred through a timer so it isn't a setState in the effect body.
+    if (typeof IntersectionObserver === "undefined") {
+      const t = setTimeout(() => setInView(true), 0);
+      return () => clearTimeout(t);
+    }
     const obs = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         setInView(true);

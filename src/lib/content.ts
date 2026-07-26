@@ -19,6 +19,9 @@ export const site = {
   githubHandle: "github.com/devChaudhari7",
   linkedin: "https://linkedin.com/in/devchaudhari2004",
   linkedinHandle: "linkedin.com/in/devchaudhari2004",
+  leetcode: "https://leetcode.com/u/dev087/",
+  leetcodeHandle: "leetcode.com/u/dev087",
+  leetcodeUser: "dev087",
   status: "Building · open to internships",
   url: "https://devchaudhari.dev",
 } as const;
