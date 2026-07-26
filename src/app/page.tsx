@@ -5,6 +5,7 @@ import GenAILab from "@/components/sections/GenAILab";
 import Skills from "@/components/sections/Skills";
 import Timeline from "@/components/sections/Timeline";
 import Achievements from "@/components/sections/Achievements";
+import Resume from "@/components/sections/Resume";
 import Contact from "@/components/sections/Contact";
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
       <Skills />
       <Timeline />
       <Achievements />
+      <Resume />
       <Contact />
     </>
   );

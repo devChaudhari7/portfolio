@@ -12,6 +12,7 @@ const STATIONS = [
   { id: "skills", label: "Skills" },
   { id: "path", label: "Path" },
   { id: "achievements", label: "Signals" },
+  { id: "resume", label: "Résumé" },
   { id: "contact", label: "Connect" },
 ];
 
