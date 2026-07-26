@@ -1,3 +1,4 @@
+import Monogram from "@/components/ui/Monogram";
 import { nav, site } from "@/lib/content";
 
 const ECG = "M0 8 H14 L17 8 L20 2 L23 14 L26 8 H44";
@@ -7,11 +8,7 @@ export default function Footer() {
     <footer className="relative border-t border-line">
       <div className="container-edge flex flex-col gap-8 py-12 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <span className="relative grid h-9 w-9 place-items-center" aria-hidden="true">
-            <span className="absolute inset-0 rounded-full border border-signal/50" />
-            <span className="absolute inset-1.5 rounded-full border border-signal/20" />
-            <span className="font-display text-xs font-semibold text-text">DC</span>
-          </span>
+          <Monogram size={34} className="text-signal" />
           <div>
             <p className="font-display text-sm font-medium text-text">{site.name}</p>
             <p className="font-mono text-[11px] text-muted">{site.role}</p>

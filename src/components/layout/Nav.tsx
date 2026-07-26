@@ -4,17 +4,8 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { nav, site } from "@/lib/content";
 import { useSmoothScroll } from "@/components/providers/SmoothScroll";
+import Monogram from "@/components/ui/Monogram";
 import { cn } from "@/lib/cn";
-
-function Monogram() {
-  return (
-    <span className="relative grid h-9 w-9 place-items-center" aria-hidden="true">
-      <span className="absolute inset-0 rounded-full border border-signal/60" />
-      <span className="absolute inset-1 rounded-full border border-signal/20" />
-      <span className="font-display text-sm font-semibold tracking-tight text-text">DC</span>
-    </span>
-  );
-}
 
 export default function Nav() {
   const { scrollTo } = useSmoothScroll();
@@ -62,7 +53,7 @@ export default function Nav() {
             className="flex items-center gap-3"
             aria-label={`${site.name} — home`}
           >
-            <Monogram />
+            <Monogram size={34} animated className="text-signal" />
             <span className="hidden font-display text-sm font-medium tracking-tight sm:block">
               {site.name}
             </span>

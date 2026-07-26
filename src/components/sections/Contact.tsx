@@ -68,7 +68,7 @@ export default async function Contact() {
         {/* the network's outer nodes — each one alive */}
         <Reveal delay={0.25} className="w-full">
           <div className="mt-16 w-full">
-            <p className="mono-label mb-5 text-center">{"// connected nodes"}</p>
+            <p className="mono-label mb-8 text-center">{"// live profiles · browsable here"}</p>
             <ContactNodes github={github} leetcode={leetcode} />
           </div>
         </Reveal>
