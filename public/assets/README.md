@@ -41,16 +41,18 @@ component for `next/image` / `<video>` (noted inline in the code).
 - Project media (frame + lightbox) → `src/components/sections/ProjectCase.tsx` (`MediaPlaceholder`)
 - Device frames (phone/browser chrome) → `src/components/ui/DeviceFrame.tsx`
 
-## Certificates (Achievements section)
-Drop the certificate scans here as PNG/JPG, then tell me and I will wire them up:
+## Certificates (Achievements section) — wired up
 
 ```
   certificates/
-    aws-cloud-foundations.png   # AWS Academy Graduate — Cloud Foundations
-    hackamined-2026.png         # HACKaMINeD 2026, Nirma University
-    codeversity-2026.png        # Codeversity National Hackathon 2026
-    ml-specialization.png       # Coursera / DeepLearning.AI + Stanford
-    ssip-2023.png               # SSIP New India Vibrant Hackathon 2023
+    aws.png                         # AWS Academy Graduate — Cloud Foundations
+    hackamined.png                  # HACKaMINeD 2026, Nirma University
+    codeversity.png                 # Codeversity National Hackathon 2026
+    ssip.png                        # SSIP New India Vibrant Hackathon 2023
+    coursera-ml-specialization.pdf  # Coursera / DeepLearning.AI + Stanford
 ```
-Landscape scans, ~1600px on the long edge is plenty. Consumed by
-`src/components/sections/Achievements.tsx` via the `image` field on each achievement.
+
+PNG scans open in the lightbox via the `image` field on each achievement in
+`src/lib/content.ts`; the Coursera PDF can't be rendered by `next/image`, so it's
+linked through `credentialUrl` and opens directly. Consumed by
+`src/components/sections/Achievements.tsx`.

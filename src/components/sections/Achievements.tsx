@@ -125,6 +125,7 @@ export default function Achievements() {
               alt={`${showing.title} certificate`}
               fill
               sizes="100vw"
+              loading="eager"
               className="object-contain"
             />
           </div>

@@ -609,6 +609,7 @@ export const achievements: Achievement[] = [
     date: "Apr 2026",
     highlight: true,
     credentialUrl: "https://www.credly.com/go/Ub7LwnCO",
+    image: "/assets/certificates/aws.png",
   },
   {
     id: "hackamined",
@@ -619,6 +620,7 @@ export const achievements: Achievement[] = [
     credentialId: "d1655fc6-d1c9-482b-819c-18da8f5749d0",
     credentialUrl:
       "https://verification.givemycertificate.com/v/d1655fc6-d1c9-482b-819c-18da8f5749d0",
+    image: "/assets/certificates/hackamined.png",
   },
   {
     id: "codeversity",
@@ -626,6 +628,7 @@ export const achievements: Achievement[] = [
     detail: "Artificial Intelligence domain · Team TechNova · IIT Gandhinagar",
     date: "Feb 2026",
     credentialId: "COD1224VER",
+    image: "/assets/certificates/codeversity.png",
   },
   {
     id: "dlai",
@@ -633,6 +636,8 @@ export const achievements: Achievement[] = [
     detail: "DeepLearning.AI & Stanford Online on Coursera · 3-course specialization",
     date: "Oct 2025",
     credentialId: "TONYR3Z0525Y",
+    // certificate is a PDF, so it opens directly rather than in the image lightbox
+    credentialUrl: "/assets/certificates/coursera-ml-specialization.pdf",
   },
   {
     id: "ssip",
@@ -641,5 +646,6 @@ export const achievements: Achievement[] = [
       "Team CheatBot · Government Polytechnic Ahmedabad · Regional round at Anant National University",
     date: "Nov 2023",
     credentialId: "TM001240",
+    image: "/assets/certificates/ssip.png",
   },
 ];
