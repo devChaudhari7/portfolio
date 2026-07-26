@@ -21,6 +21,9 @@ export default function Footer() {
               {n.label}
             </a>
           ))}
+          <a href={site.resume} target="_blank" rel="noreferrer" className="mono-label transition-colors hover:text-signal">
+            Résumé
+          </a>
           <a href={site.github} target="_blank" rel="noreferrer" className="mono-label transition-colors hover:text-signal">
             GitHub
           </a>

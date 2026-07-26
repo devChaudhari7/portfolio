@@ -24,6 +24,8 @@ export const site = {
   leetcodeUser: "dev087",
   status: "Building · open to internships",
   url: "https://devchaudhari.dev",
+  /** filename is the download name a recruiter ends up with — keep it readable */
+  resume: "/Dev-Chaudhari-Resume.pdf",
 } as const;
 
 export const nav = [

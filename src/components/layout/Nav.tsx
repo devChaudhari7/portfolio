@@ -73,6 +73,15 @@ export default function Nav() {
                 {item.label}
               </a>
             ))}
+            {/* opens in a new tab so it never navigates away from the system */}
+            <a
+              href={site.resume}
+              target="_blank"
+              rel="noreferrer"
+              className="mono-label flex items-center gap-1.5 text-text/70 transition-colors hover:text-signal"
+            >
+              Résumé <span aria-hidden="true">↗</span>
+            </a>
             <a
               href="#contact"
               onClick={(e) => {
@@ -128,7 +137,8 @@ export default function Nav() {
             transition={{ duration: 0.3 }}
           >
             <ul className="flex flex-col gap-2">
-              {[...nav, { id: "contact", label: "Contact", href: "#contact" }].map((item, i) => (
+              {/* `nav` already ends with Contact — appending another duplicated it */}
+              {nav.map((item, i) => (
                 <motion.li
                   key={item.id}
                   initial={{ opacity: 0, x: -20 }}
@@ -147,6 +157,21 @@ export default function Nav() {
                   </a>
                 </motion.li>
               ))}
+              <motion.li
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.08 + nav.length * 0.07 + 0.07, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <a
+                  href={site.resume}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={() => setOpen(false)}
+                  className="flex items-baseline gap-3 font-display text-5xl font-semibold tracking-tight text-signal"
+                >
+                  Résumé <span className="text-2xl" aria-hidden="true">↗</span>
+                </a>
+              </motion.li>
             </ul>
             <p className="mono-label mt-12">{site.email}</p>
           </motion.div>

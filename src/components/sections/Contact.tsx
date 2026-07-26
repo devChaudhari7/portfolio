@@ -65,6 +65,22 @@ export default async function Contact() {
           <p className="mt-8 select-all font-mono text-sm text-text/80">{site.email}</p>
         </Reveal>
 
+        <Reveal delay={0.22}>
+          <a
+            href={site.resume}
+            target="_blank"
+            rel="noreferrer"
+            data-magnetic
+            className="mt-6 inline-flex items-center gap-2.5 rounded-full border border-line-strong px-6 py-3 text-sm text-text transition-all hover:border-signal hover:text-signal hover:shadow-[0_0_24px_-8px_var(--signal)]"
+          >
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 1a.75.75 0 0 1 .75.75v6.69l2.22-2.22a.75.75 0 1 1 1.06 1.06l-3.5 3.5a.75.75 0 0 1-1.06 0l-3.5-3.5a.75.75 0 0 1 1.06-1.06l2.22 2.22V1.75A.75.75 0 0 1 8 1Z" />
+              <path d="M2.75 12a.75.75 0 0 1 .75.75v.75h9v-.75a.75.75 0 0 1 1.5 0v1.5a.75.75 0 0 1-.75.75H2.75a.75.75 0 0 1-.75-.75v-1.5a.75.75 0 0 1 .75-.75Z" />
+            </svg>
+            View résumé (PDF)
+          </a>
+        </Reveal>
+
         {/* the network's outer nodes — each one alive */}
         <Reveal delay={0.25} className="w-full">
           <div className="mt-16 w-full">
