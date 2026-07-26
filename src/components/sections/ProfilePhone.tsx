@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "motion/react";
-import { site, timeline } from "@/lib/content";
+import { about, achievements, site, timeline } from "@/lib/content";
 import { LANGUAGE_COLORS, type GitHubProfile, type LeetCodeProfile } from "@/lib/social";
 import { cn } from "@/lib/cn";
 
@@ -82,13 +82,16 @@ function GitHubApp({ data }: { data: GitHubProfile | null }) {
     <div className="pb-3">
       <div className="px-4 pt-3">
         <div className="flex items-center gap-3">
+          {/* requested well above display size: the 3D stage scales the phone
+              up, and a 56px source would rasterise soft */}
           <Image
             src={data.avatar}
             alt=""
-            width={56}
-            height={56}
+            width={224}
+            height={224}
+            quality={90}
             loading="eager"
-            className="rounded-full ring-1 ring-white/15"
+            className="h-14 w-14 rounded-full ring-1 ring-white/15"
           />
           <div className="min-w-0">
             <p className="truncate text-[15px] font-semibold" style={{ color: t.text }}>
@@ -194,10 +197,11 @@ function LeetCodeApp({ data }: { data: LeetCodeProfile | null }) {
           <Image
             src={data.avatar}
             alt=""
-            width={48}
-            height={48}
+            width={192}
+            height={192}
+            quality={90}
             loading="eager"
-            className="rounded-full ring-1 ring-white/15"
+            className="h-12 w-12 rounded-full ring-1 ring-white/15"
           />
         )}
         <div className="min-w-0">
@@ -317,51 +321,132 @@ function LeetCodeApp({ data }: { data: LeetCodeProfile | null }) {
   );
 }
 
+/** A company/school avatar the way LinkedIn renders one before a logo is set. */
+function OrgMark({ name, t }: { name: string; t: (typeof APPS)[AppId] }) {
+  return (
+    <span
+      className="grid h-9 w-9 flex-none place-items-center rounded text-[13px] font-semibold"
+      style={{ background: t.surface, color: t.sub }}
+      aria-hidden="true"
+    >
+      {name.charAt(0)}
+    </span>
+  );
+}
+
 function LinkedInApp() {
   const t = APPS.linkedin;
   const work = timeline.filter((x) => x.kind === "work");
   const edu = timeline.filter((x) => x.kind === "education");
+  const certs = achievements.slice(0, 4);
+  const topSkills = ["React Native", "Next.js", "TypeScript", "Python", "Supabase", "FastAPI"];
+  const OPEN_GREEN = "#a7c98b";
 
   return (
     <div className="pb-3">
-      <div className="h-20" style={{ background: `linear-gradient(120deg, ${t.accent}, #004182)` }} />
-      <div className="-mt-9 px-4">
-        <div
-          className="grid h-[68px] w-[68px] place-items-center rounded-full text-[22px] font-semibold"
-          style={{ background: t.surface, color: t.text, boxShadow: `0 0 0 4px ${t.bg}` }}
-        >
-          DC
+      {/* cover */}
+      <div
+        className="h-[70px]"
+        style={{ background: `linear-gradient(115deg, ${t.accent} 0%, #004182 55%, #0b2c4d 100%)` }}
+      />
+
+      <div className="px-4">
+        {/* avatar with the #OpenToWork ring LinkedIn draws */}
+        <div className="-mt-9 w-fit">
+          <div
+            className="relative rounded-full p-[3px]"
+            style={{ background: OPEN_GREEN, boxShadow: `0 0 0 3px ${t.bg}` }}
+          >
+            <Image
+              src={about.portrait}
+              alt={site.name}
+              width={224}
+              height={224}
+              quality={90}
+              loading="eager"
+              className="h-[68px] w-[68px] rounded-full object-cover"
+            />
+            <span
+              className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-sm px-1 py-[1px] text-[6px] font-bold tracking-tight"
+              style={{ background: OPEN_GREEN, color: "#14300a" }}
+            >
+              #OPENTOWORK
+            </span>
+          </div>
         </div>
-        <p className="mt-2 text-[17px] font-semibold" style={{ color: t.text }}>
+
+        <p className="mt-2.5 text-[19px] font-semibold leading-tight" style={{ color: t.text }}>
           {site.name}
         </p>
-        <p className="text-[13px] leading-snug" style={{ color: t.text }}>
-          {site.role}
+        <p className="mt-0.5 text-[13px] leading-snug" style={{ color: t.text }}>
+          {site.role} · Building production software end to end
         </p>
-        <p className="mt-0.5 text-[11px]" style={{ color: t.sub }}>
-          {site.location}
+        <p className="mt-1 text-[12px]" style={{ color: t.sub }}>
+          {site.location} ·{" "}
+          <a href={`mailto:${site.email}`} className="font-semibold" style={{ color: t.accent }}>
+            Contact info
+          </a>
         </p>
-        <span
-          className="mt-2.5 inline-block rounded-full px-3 py-1 text-[11px] font-semibold"
-          style={{ background: t.accent, color: "#fff" }}
+        <p className="mt-1 text-[12px]" style={{ color: t.sub }}>
+          Nirma University
+        </p>
+
+        {/* open-to-work card */}
+        <div
+          className="mt-3 rounded-lg p-3"
+          style={{ background: "rgba(167,201,139,0.12)", border: "1px solid rgba(167,201,139,0.25)" }}
         >
-          Open to internships
-        </span>
+          <p className="text-[12px] font-semibold" style={{ color: t.text }}>
+            Open to work
+          </p>
+          <p className="mt-0.5 text-[11px] leading-snug" style={{ color: t.sub }}>
+            Software Engineer, Full-Stack Developer and AI/ML Engineer internship roles
+          </p>
+        </div>
+
+        {/* action row */}
+        <div className="mt-3 flex gap-2">
+          <a
+            href={`mailto:${site.email}`}
+            className="flex-1 rounded-full py-1.5 text-center text-[12px] font-semibold"
+            style={{ background: t.accent, color: "#fff" }}
+          >
+            Message
+          </a>
+          <a
+            href={site.linkedin}
+            target="_blank"
+            rel="noreferrer"
+            className="flex-1 rounded-full py-1.5 text-center text-[12px] font-semibold"
+            style={{ border: `1px solid ${t.sub}`, color: t.text }}
+          >
+            Connect
+          </a>
+        </div>
       </div>
+
+      <LiSection title="About" t={t}>
+        <p className="text-[12px] leading-relaxed" style={{ color: t.sub }}>
+          {about.paragraphs[0]}
+        </p>
+      </LiSection>
 
       <LiSection title="Experience" t={t}>
         {work.map((w) => (
           <div key={w.id} className="flex gap-2.5">
-            <span className="mt-0.5 h-8 w-8 flex-none rounded" style={{ background: t.surface }} />
+            <OrgMark name={w.org} t={t} />
             <div className="min-w-0">
-              <p className="text-[13px] font-medium" style={{ color: t.text }}>
+              <p className="text-[13px] font-semibold" style={{ color: t.text }}>
                 {w.title}
               </p>
               <p className="text-[12px]" style={{ color: t.text }}>
-                {w.org}
+                {w.org} · Internship
               </p>
               <p className="text-[11px]" style={{ color: t.sub }}>
                 {w.period}
+              </p>
+              <p className="text-[11px]" style={{ color: t.sub }}>
+                {w.meta}
               </p>
             </div>
           </div>
@@ -371,9 +456,9 @@ function LinkedInApp() {
       <LiSection title="Education" t={t}>
         {edu.map((e) => (
           <div key={e.id} className="flex gap-2.5">
-            <span className="mt-0.5 h-8 w-8 flex-none rounded" style={{ background: t.surface }} />
+            <OrgMark name={e.org} t={t} />
             <div className="min-w-0">
-              <p className="text-[13px] font-medium" style={{ color: t.text }}>
+              <p className="text-[13px] font-semibold" style={{ color: t.text }}>
                 {e.org}
               </p>
               <p className="text-[12px]" style={{ color: t.text }}>
@@ -385,6 +470,32 @@ function LinkedInApp() {
             </div>
           </div>
         ))}
+      </LiSection>
+
+      <LiSection title="Licenses & certifications" t={t}>
+        {certs.map((c) => (
+          <div key={c.id} className="flex gap-2.5">
+            <OrgMark name={c.title} t={t} />
+            <div className="min-w-0">
+              <p className="text-[13px] font-semibold" style={{ color: t.text }}>
+                {c.title}
+              </p>
+              <p className="text-[11px]" style={{ color: t.sub }}>
+                Issued {c.date}
+              </p>
+            </div>
+          </div>
+        ))}
+      </LiSection>
+
+      <LiSection title="Skills" t={t}>
+        <ul className="-mt-1 divide-y" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+          {topSkills.map((s) => (
+            <li key={s} className="py-1.5 text-[13px] font-medium" style={{ color: t.text }}>
+              {s}
+            </li>
+          ))}
+        </ul>
       </LiSection>
     </div>
   );

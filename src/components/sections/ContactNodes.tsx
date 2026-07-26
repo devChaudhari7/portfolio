@@ -9,10 +9,13 @@ import { cn } from "@/lib/cn";
 
 /* --------------------------------------------------------------- the stage -- */
 
+// Shallow tilts on purpose: a steep rotateY magnifies the near edge, and the
+// browser rasterises the layer flat before transforming it, so the outer phones
+// went soft. 18° keeps the depth without visibly resampling the screen.
 const LAYOUT: { app: AppId; rotate: number; z: number; scale: number; delay: string }[] = [
-  { app: "github", rotate: 26, z: -70, scale: 0.93, delay: "0s" },
-  { app: "leetcode", rotate: 0, z: 60, scale: 1, delay: "-2s" },
-  { app: "linkedin", rotate: -26, z: -70, scale: 0.93, delay: "-4s" },
+  { app: "github", rotate: 18, z: -40, scale: 0.95, delay: "0s" },
+  { app: "leetcode", rotate: 0, z: 50, scale: 1, delay: "-2s" },
+  { app: "linkedin", rotate: -18, z: -40, scale: 0.95, delay: "-4s" },
 ];
 
 function Device({
@@ -51,6 +54,10 @@ function Device({
         style={{
           transformStyle: "preserve-3d",
           transform,
+          // promote to its own layer so the 3D raster is generated at the
+          // transformed scale rather than being upscaled after the fact
+          willChange: flat ? undefined : "transform",
+          backfaceVisibility: "hidden",
           transition: reduced ? undefined : "transform 0.7s cubic-bezier(0.16,1,0.3,1)",
         }}
         onMouseEnter={() => setActive(true)}
@@ -100,8 +107,12 @@ function DialStrip() {
         clearInterval(id);
         return;
       }
+      // Slice rather than append: the updater form read `i` after it had already
+      // been incremented, which dropped the first digit and tacked on
+      // digits[10] === undefined. Deriving from the index is also idempotent,
+      // so a double-invoked effect can't duplicate the number.
       setLit(digits[i]);
-      setTyped((t) => t + digits[i]);
+      setTyped(digits.slice(0, i + 1));
       i++;
     }, 240);
     return () => clearInterval(id);
